@@ -1,0 +1,42 @@
+stages:
+    - validation
+    - build
+    - prepare
+    - test
+    - release
+    - sync
+    - publish
+
+variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+    MY_PROJECT_ID: "33611657"
+
+include:
+  - project: nofusscomputing/projects/gitlab-ci
+    ref: ce1cc017e26ff7f6cee586cc7d98e4d292275672
+    file:
+      - conventional_commits/.gitlab-ci.yml
+      - validation/.gitlab-ci.yml
+      - gitlab_release/.gitlab-ci.yml
+      - git_push_mirror/.gitlab-ci.yml
+
+
+
+
+Markdown Linting:
+  extends:
+    - .Lint_Markdown
+
+
+Gitlab Release:
+    extends:
+        - .gitlab_release
+
+
+Github (Push --mirror):
+    variables:
+        GIT_SYNC_URL: "https://$GITHUB_USERNAME_ROBOT:$GITHUB_TOKEN_ROBOT@github.com/NoFussComputing/docker-mail.git"
+    extends:
+        - .git_push_mirror
+
+

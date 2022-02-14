@@ -89,6 +89,7 @@ RUN chmod +x /docker-entrypoint.sh \
       # ensure dovecot related scripts are executable
     && chmod +x /bin/quota-warning.sh \
     && chmod +x /bin/welcome-email.sh \
+    && chmod +x /bin/group-mailbox.sh \
     && chmod 744 /etc/dovecot/dovecot-acl \
       # Postfix related commands
     && usermod -a -G vmail postfix \

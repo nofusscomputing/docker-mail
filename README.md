@@ -1,7 +1,5 @@
-# README.md
-
-
 <div align="center" width="100%">
+
 
 # No Fuss Computing - Docker Mail Server
 
@@ -43,5 +41,4 @@ links:
 - [Issues](https://gitlab.com/nofusscomputing/projects/docker-mail/-/issues)
 
 - [Merge Requests (Pull Requests)](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests)
-
 

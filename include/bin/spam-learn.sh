@@ -2,6 +2,8 @@
 
 set -e
 
+start=$(date '+%s')
+
 POSTMASTER="${1}"
 
 # for testing script
@@ -32,6 +34,8 @@ From: Mail Server <NO-REPLY@$(hostname -f)>
 Subject: Spam Learning Report $(date +%Y-%m-%d-%H:%M-%Z)
 
 Command: /bin/spam-learn.sh
+
+Scan duration: $((`date '+%s'` - $start))
 
 
 ****************** Ham Scan ******************

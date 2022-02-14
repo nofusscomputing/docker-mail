@@ -1,0 +1,6 @@
+#
+#  Backup the docker container 
+#
+# m h dom mon dow user  command
+01 0,3,6,9,12,15,18,21	* * *	root	/bin/backup.sh 2>&1
+

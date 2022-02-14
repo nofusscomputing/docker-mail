@@ -55,8 +55,14 @@ RUN chmod +x /docker-entrypoint.sh \
       # Create vmail user for system
     && groupadd -g 5000 vmail \
     && useradd -g vmail -u 5000 vmail -d /var/vmail \
+      # Ensure Backup directory is created
+    && mkdir /backup \
+    && chown root:root /backup \
+    && chmod 700 /backup \
       # create SSL directory for ssl certificates
     && mkdir -p /ssl \
+      # Ensure scripts are executable
+    && chmod +x /bin/backup.sh \
       # Dovecot related commands
     && mkdir -p /srv/mail \ 
     && chown vmail:vmail /srv/mail \
@@ -82,9 +88,10 @@ RUN chmod +x /docker-entrypoint.sh \
       # Spammassassin related Commands
     && mkdir -p /var/spool/spamassassin \
     && chmod 777 /var/spool/spamassassin \
+        
 
 # Setup data volumes
-VOLUME /srv/mail /ssl /var/spool/spamassassin /var/log
+VOLUME /srv/mail /ssl /var/spool/spamassassin /backup /var/log
 
 # Configure postfix
 RUN postconf -e "maillog_file=/var/log/postfix.log" \

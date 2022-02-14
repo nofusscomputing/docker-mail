@@ -1,0 +1,17 @@
+server_host = ldap://172.20.0.4
+start_tls = no
+version = 3
+#tls_ca_cert_file = /etc/ldap/tls/CA.pem
+#tls_require_cert = yes
+
+bind = yes
+bind_dn = cn=admin,dc=example,dc=org
+bind_pw = admin
+
+
+search_base = ou=mail,dc=example,dc=org
+
+query_filter = (&(ObjectClass=dNSDomain)(dc=%s))
+
+result_attribute = dc
+

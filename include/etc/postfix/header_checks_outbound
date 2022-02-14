@@ -1,0 +1,14 @@
+#
+#  Header Checks for outbound E-Mail
+#
+# Checks for outbound mail
+#
+
+#
+# Remove spam headers as they are applicable for local users only.
+#
+/^X-Spam-Flag:/    IGNORE
+/^X-Spam-Score:/   IGNORE
+/^X-Spam-Level:/   IGNORE
+/^X-Spam-Status:/  IGNORE
+

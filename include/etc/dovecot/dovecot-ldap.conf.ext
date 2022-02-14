@@ -1,0 +1,24 @@
+uris = ldap://openldap
+dn = cn=admin,dc=example,dc=org
+dnpass = admin
+
+debug_level = 0
+auth_bind = no
+
+ldap_version = 3
+base = dc=example,dc=org
+scope = subtree
+
+user_attrs = uid=user=%{ldap:uid}, memberUid=user=%{ldap:mail}, mail=home=/srv/mail/%{ldap:mail}, mail=mailHomeDirectory=maildir:~/mail:LAYOUT=fs, mailQuota=quota_rule=*:bytes=%$
+
+user_filter = (&(objectClass=PostfixBookMailAccount)(|(uid=%u)(mail=%u)(cn=%u)))
+
+
+pass_filter = (&(objectClass=PostfixBookMailAccount)(|(uid=%u)(mail=%u)))
+
+
+iterate_attrs = mail=user
+iterate_filter = (objectClass=PostfixBookMailAccount)
+
+
+

@@ -32,6 +32,17 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends 
       postfix-ldap=3.5.6-1+b1 \
       libsasl2-modules \
       sasl2-bin \
+        # Amavis
+      amavisd-new=1:2.11.1-5 \
+      spamassassin=3.4.6-1 \
+      spamc=3.4.6-1 \
+        # Amavis decoders
+      arj bzip2 cabextract cpio file gzip nomarch pax unzip zip xzdec lrzip lzop rpm2cpio unrar-free p7zip-full lz4 \
+#      clamav=0.103.5+dfsg-0+deb11u1 \
+#      clamav-daemon=0.103.5+dfsg-0+deb11u1 \
+      libmailtools-perl=2.21-1 \
+      fam=2.7.0-17.3 \
+      libnet-dns-perl=1.29-1 \
 # Cleanup, remove cron jobs not required
 RUN rm -f /etc/cron.d/e2scrub_all \
     && rm -f /etc/cron.daily/apt-compat \
@@ -68,9 +79,12 @@ RUN chmod +x /docker-entrypoint.sh \
     && mkdir -p /var/spool/postfix/private/dovecot \
     && chown postfix:postfix /var/spool/postfix/private/dovecot \
     && chown vmail:vmail /var/lib/dovecot \
+      # Spammassassin related Commands
+    && mkdir -p /var/spool/spamassassin \
+    && chmod 777 /var/spool/spamassassin \
 
 # Setup data volumes
-VOLUME /srv/mail /ssl /var/log
+VOLUME /srv/mail /ssl /var/spool/spamassassin /var/log
 
 # Configure postfix
 RUN postconf -e "maillog_file=/var/log/postfix.log" \

@@ -8,6 +8,20 @@ if [ "0$POST_MASTER_EMAIL" != "0" ]; then export MAILTO="$POST_MASTER_EMAIL"; fi
 printenv | grep -v "no_proxy" > /etc/environment
 
 
+if [ -f "/var/run/amavis/amavisd.pid" ]; then rm /var/run/amavis/amavisd.pid; fi
+
+
+if [ "$1" == "" ]; then
+
+    echo "Setup server type ($SERVERTYPE)"
+
+    echo "[Information] starting supervisor daemon"
+    /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+
+    bash
+
+fi
+
 # compile sieve scripts
 for file in /etc/dovecot/sieve/*.sieve ; 
 do 

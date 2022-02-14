@@ -1,0 +1,32 @@
+#
+#  Privacy Header Checks
+#
+
+#
+# Hide the software the sender is using
+#
+/^User-Agent:/  IGNORE
+
+#
+# Remove Date from header.
+# 
+# The date that the client users is often in their own timezone.
+# this is not desirable, so removing and having the server re-add
+# the date header, enables hiding the users timezone.
+#
+# NOTE: postfix requires the following settings:
+#  - always_add_missing_headers=yes
+#  - local_header_rewrite_clients=permit_sasl_authenticated,permit_mynetworks,permit_inet_interfaces
+#
+# These settings will add the date back to the E-Mail header using the servers timezone.
+#
+/^Date:/        IGNORE
+
+#
+# Remove the sender IP Address and Any hostname and replace with localhost
+#
+/^Received:\sfrom [^ ]+ \([^ ]+ \[[IPv0-9a-f:.]+\]\)(\s+.* \(server\) with .+)$/ REPLACE Received: from [127.0.0.1] (localhost [127.0.0.1])$1
+
+
+
+

@@ -1,0 +1,16 @@
+server_host = ldap://openldap
+start_tls = no
+version = 3
+#tls_ca_cert_file = /etc/ldap/tls/CA.pem
+#tls_require_cert = yes
+
+bind = yes
+bind_dn = cn=admin,dc=example,dc=org
+bind_pw = admin
+
+search_base = ou=Users,dc=example,dc=org
+
+
+query_filter = (&(objectClass=PostfixBookMailAccount)(|(mail=%s)(mailAlias=%s)))
+
+result_attribute = uid

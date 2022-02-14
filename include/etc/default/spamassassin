@@ -1,0 +1,2 @@
+OPTIONS="--create-prefs --max-children 5 --username debian-spamd --helper-home-dir /home/spamd/ -s /var/log/spamd.log"
+CRON=1

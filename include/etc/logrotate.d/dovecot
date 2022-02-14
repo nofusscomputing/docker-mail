@@ -1,0 +1,14 @@
+/var/log/dovecot.log 
+{
+    rotate 30
+    daily
+    missingok
+    notifempty
+    compress
+    delaycompress
+    extension log
+    create 0644 dovecot dovecot
+         postrotate
+             supervisorctl restart dovecot
+         endscript
+}

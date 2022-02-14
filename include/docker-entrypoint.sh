@@ -31,6 +31,8 @@ do
 done
 
 
+mkdir -p /var/lock/fetchmail
+
 if [ "$1" == "setup" ]; then
 
 

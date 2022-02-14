@@ -43,6 +43,21 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends 
       libmailtools-perl=2.21-1 \
       fam=2.7.0-17.3 \
       libnet-dns-perl=1.29-1 \
+        # Fetchmail
+      fetchmail=6.4.16-4+deb11u1 \
+        # Perl Modules for fetchmail.pl
+        # DBI
+      libdbix-easy-perl \
+        # LockFile::Simple
+      liblockfile-simple-perl \
+        # DBD::mysql
+      libclass-dbi-mysql-perl \
+        # Sys::Syslog
+      liblogger-syslog-perl \
+        # LockFile::Simple
+      libio-lockedfile-perl
+
+
 # Cleanup, remove cron jobs not required
 RUN rm -f /etc/cron.d/e2scrub_all \
     && rm -f /etc/cron.daily/apt-compat \
@@ -88,6 +103,13 @@ RUN chmod +x /docker-entrypoint.sh \
       # Spammassassin related Commands
     && mkdir -p /var/spool/spamassassin \
     && chmod 777 /var/spool/spamassassin \
+      # Ensure spamassassin related scripts are executable
+    && chmod +x /bin/spam-learn.sh \
+       # fetchmail.pl setup
+    && curl -o /bin/fetchmail.pl https://raw.githubusercontent.com/postfixadmin/postfixadmin/8f20c96278a694a7e0bb570f1d56c208105e5a14/ADDITIONS/fetchmail.pl \
+    && chmod +x /bin/fetchmail.pl \
+    && mkdir -p /var/run/fetchmail \
+    && mkdir -p /var/lock/fetchmail
         
 
 # Setup data volumes

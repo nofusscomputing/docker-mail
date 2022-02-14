@@ -1,6 +1,22 @@
 FROM debian:bullseye-slim
 
 
+LABEL \
+  #org.opencontainers.image.created="" \ # set during build with $(date --rfc-3339=seconds) \
+  org.opencontainers.image.authors="No Fuss Computing" \ 
+  #org.opencontainers.image.url="" # $CI_PROJECT_URL/-/releases/$CI_COMMIT_TAG set during build from url\
+  #org.opencontainers.image.documentation="" # $CI_PROJECT_URL/pages Set URL during build \
+  #org.opencontainers.image.source="" # $CI_PROJECT_URL Set URL during build \
+  #org.opencontainers.image.version="" \ # $(cz -n cz_nfc version --project) ) Set during build from .cz.yml
+  #org.opencontainers.image.revision="" # $CI_COMMIT_SHA set during build from git commit \
+  org.opencontainers.image.vendor="No Fuss Computing" \
+    #License(s) under which contained software is distributed as an SPDX License Expression.
+  org.opencontainers.image.licenses="" \
+  org.opencontainers.image.title="No Fuss Computings docker mail server" \
+  org.opencontainers.image.description="A Complete mailserver in a container"
+
+
+
 # Install dependencies
 RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends install \
       curl \
@@ -170,3 +186,12 @@ EXPOSE 25 587 993 4190
 
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
+
+
+# testing software
+RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends install \
+      procps \
+      vim \
+      iputils-ping \
+      python3-ldap
+#    && freshclam

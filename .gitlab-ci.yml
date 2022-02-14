@@ -13,7 +13,7 @@ variables:
 
 include:
   - project: nofusscomputing/projects/gitlab-ci
-    ref: ce1cc017e26ff7f6cee586cc7d98e4d292275672
+    ref: 36ce0b0b76e6769c7a2e0d4ea0f3fcd2cc2d6bb1
     file:
       - conventional_commits/.gitlab-ci.yml
       - validation/.gitlab-ci.yml

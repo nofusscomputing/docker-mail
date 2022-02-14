@@ -1,4 +1,8 @@
 /var/log/syslog
+/var/log/mail.info
+/var/log/mail.warn
+/var/log/mail.err
+/var/log/mail.log
 /var/log/daemon.log
 /var/log/kern.log
 /var/log/auth.log
@@ -19,5 +23,6 @@
     sharedscripts
         postrotate
             supervisorctl restart rsyslog
+            supervisorctl restart amavis
         endscript
 }

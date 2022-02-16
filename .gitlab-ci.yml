@@ -93,23 +93,17 @@ Docker Hub:
     - docker image tag $CI_REGISTRY_IMAGE/docker-mail:$CI_COMMIT_SHA nofusscomputing/docker-mail:$CI_COMMIT_TAG
     - docker image ls
     - docker push nofusscomputing/docker-mail:$CI_COMMIT_TAG
-  rules:
-    - if: $CI_COMMIT_TAG
-      when: on_success
-    - if: $CI_MERGE_REQUEST_IID
-      when: never
-    - if: '$CI_COMMIT_BRANCH'
-      when: never
   needs: [ "Docker Container" ]
   environment:
     name: DockerHub
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: never
     - if: $CI_COMMIT_TAG
       when: on_success
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH'
+      when: never
     - when: never
-
 
 
 Github (Push --mirror):

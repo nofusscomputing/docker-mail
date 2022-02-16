@@ -93,23 +93,19 @@ Docker Hub:
     - echo Branch tag is $Branch_TAG
     - docker image ls
     - |
-      if [ "0$CI_PIPELINE_SOURCE" == "0merge_request_event" ]; then
+      if [ "0$CI_COMMIT_BRANCH" == "0development" ]; then
 
-        if [ "0$CI_COMMIT_BRANCH" == "0development" ]; then
-
-          DH_LATEST_TAG=dev
-
-        fi
+        DH_LATEST_TAG=dev
 
       elif [ "0$CI_COMMIT_TAG" != "0" ] ; then
 
         DH_LATEST_TAG=latest
 
+        docker image tag $CI_REGISTRY_IMAGE/docker-mail:$CI_COMMIT_SHA nofusscomputing/docker-mail:$CI_COMMIT_TAG;
+
         docker image ls;
       
         docker push nofusscomputing/docker-mail:$CI_COMMIT_TAG;
-
-        docker image tag $CI_REGISTRY_IMAGE/docker-mail:$CI_COMMIT_SHA nofusscomputing/docker-mail:$CI_COMMIT_TAG;
 
       fi
 

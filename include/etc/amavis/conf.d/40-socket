@@ -2,5 +2,9 @@
 # Socket config
 #
 
-$inet_socket_port = 10023
+# Listening socket
+#   10023 - Submission, Outbound mail
+#   10024 - SMTP, Inbound mail
+
+$inet_socket_port = [10023, 10024]
 

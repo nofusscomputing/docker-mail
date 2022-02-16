@@ -129,7 +129,11 @@ RUN chmod +x /docker-entrypoint.sh \
     && curl -o /bin/fetchmail.pl https://raw.githubusercontent.com/postfixadmin/postfixadmin/8f20c96278a694a7e0bb570f1d56c208105e5a14/ADDITIONS/fetchmail.pl \
     && chmod +x /bin/fetchmail.pl \
     && mkdir -p /var/run/fetchmail \
-    && mkdir -p /var/lock/fetchmail
+    && mkdir -p /var/lock/fetchmail \
+      # Amavis DKIM related commands
+    && mkdir -p /certs/amavis/dkim/ \
+    && chown root:amavis /certs/amavis/dkim/ \
+    && chmod 750 /certs/amavis/dkim/
         
 
 # Setup data volumes

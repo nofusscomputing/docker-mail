@@ -36,6 +36,24 @@ mkdir -p /var/lock/fetchmail
 if [ "$1" == "setup" ]; then
 
 
+
+if [ ! -f /certs/amavis/dkim/example.org.dkim.pem ]; then
+
+        echo "[WARNING] Creating DKIM Cert, example.org. Consider Creating your own";
+
+        amavisd-new genrsa /certs/amavis/dkim/example.org.dkim.pem 4096;
+
+        chmod g+r /certs/amavis/dkim/example.org.dkim.pem;
+
+        chgrp amavis /certs/amavis/dkim/example.org.dkim.pem;
+
+        amavisd-new showkeys example.org;
+    fi
+
+
+    supervisorctl start amavis;
+
+
 postconf -e "myhostname = $(`echo hostname -f`)"
 
 

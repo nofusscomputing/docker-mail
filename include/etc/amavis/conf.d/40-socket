@@ -1,0 +1,6 @@
+#
+# Socket config
+#
+
+$inet_socket_port = 10023
+

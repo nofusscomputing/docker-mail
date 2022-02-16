@@ -69,7 +69,7 @@ postconf -e "myhostname = $(`echo hostname -f`)"
 
         echo "[Information] Creating DHPEM Key"
 
-        openssl dhparam -out /certs/dovecot/dh.pem 4096
+        openssl dhparam -out /certs/dovecot/dh.pem 2048
 
     fi
 

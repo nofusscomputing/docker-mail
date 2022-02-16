@@ -71,7 +71,10 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends 
         # Sys::Syslog
       liblogger-syslog-perl \
         # LockFile::Simple
-      libio-lockedfile-perl
+      libio-lockedfile-perl \
+        # DKIM
+      opendkim=2.11.0~beta2-4 \
+      opendkim-tools=2.11.0~beta2-4
 
 
 # Cleanup, remove cron jobs not required

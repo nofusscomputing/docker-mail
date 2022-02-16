@@ -1,0 +1,18 @@
+dkim_key(
+    'example.org',
+    'dkim',
+    '/certs/amavis/dkim/example.org.dkim.pem'
+);
+
+
+@dkim_signature_options_bysender_maps = (
+    {
+        "example.org" => {
+            s   => 'dkim',
+            d   => 'example.org',
+            a   => 'rsa-sha256',
+            ttl => 10*24*3600
+        }
+    }
+);
+

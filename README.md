@@ -77,6 +77,8 @@ This docker container is intended to be a fully fledged E-Mail Server. Dovecot a
 
     - Spam filtering
 
+    - [DKIM key signing](pages/dkim.md) _Note: [Key length requirements](https://datatracker.ietf.org/doc/html/rfc6376#section-3.3.3)_
+
 
 - General Features:
 

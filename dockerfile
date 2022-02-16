@@ -94,14 +94,14 @@ RUN chmod +x /docker-entrypoint.sh \
     && chown root:root /backup \
     && chmod 700 /backup \
       # create SSL directory for ssl certificates
-    && mkdir -p /ssl \
+    && mkdir -p /certs \
       # Ensure scripts are executable
     && chmod +x /bin/backup.sh \
       # Dovecot related commands
     && mkdir -p /srv/mail \ 
     && chown vmail:vmail /srv/mail \
     && chmod 765 -R /srv/mail \
-    && mkdir -p /ssl/dovecot \
+    && mkdir -p /certs/dovecot \
     && chown dovecot:dovecot -R /etc/dovecot/ \
     && chgrp postfix -R /etc/dovecot/sieve/ \
     && chmod 0755 -R /etc/dovecot/sieve/ \
@@ -112,7 +112,7 @@ RUN chmod +x /docker-entrypoint.sh \
     && chmod 744 /etc/dovecot/dovecot-acl \
       # Postfix related commands
     && usermod -a -G vmail postfix \
-    && mkdir -p /ssl/postfix \
+    && mkdir -p /certs/postfix \
     && ln -s /etc/dovecot/dovecot-ldap.conf.ext /etc/dovecot/dovecot-ldap-userdb.conf.ext \
       # ensure postfix related scripts are executable
     && chmod +x /bin/postfix.sh \
@@ -133,7 +133,7 @@ RUN chmod +x /docker-entrypoint.sh \
         
 
 # Setup data volumes
-VOLUME /srv/mail /ssl /var/spool/spamassassin /backup /var/log
+VOLUME /srv/mail /certs /var/spool/spamassassin /backup /var/log
 
 # Configure postfix
 RUN postconf -e "maillog_file=/var/log/postfix.log" \
@@ -174,8 +174,8 @@ RUN postconf -e "maillog_file=/var/log/postfix.log" \
   # check quota before delivery
   && postconf -e "smtpd_recipient_restrictions=check_policy_service=inet:localhost:12340" \
   # set tls settings
-  && postconf -e "smtpd_tls_cert_file=/ssl/postfix/cert.pem" \
-  && postconf -e "smtpd_tls_key_file=/ssl/postfix/key.pem" \
+  && postconf -e "smtpd_tls_cert_file=/certs/postfix/cert.pem" \
+  && postconf -e "smtpd_tls_key_file=/certs/postfix/key.pem" \
   && postconf -e "smtpd_helo_required = yes" \
   && postconf -e "smtpd_delay_reject = yes" \
   && postconf -e "disable_vrfy_command = yes" \

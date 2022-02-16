@@ -39,19 +39,19 @@ if [ "$1" == "setup" ]; then
 postconf -e "myhostname = $(`echo hostname -f`)"
 
 
-    if [ ! -f /ssl/dovecot/key.pem ]; then
+    if [ ! -f /certs/dovecot/key.pem ]; then
 
         echo "[WARNING] Creating Self-signed TLS Cert. Consider using letsencrypt or another trusted CA"
 
-        openssl req  -nodes -new -x509 -keyout /ssl/dovecot/key.pem -out /ssl/dovecot/cert.pem -subj '/CN=localhost'
+        openssl req  -nodes -new -x509 -keyout /certs/dovecot/key.pem -out /certs/dovecot/cert.pem -subj '/CN=localhost'
 
     fi
 
-    if [ ! -f /ssl/dovecot/dh.pem ]; then
+    if [ ! -f /certs/dovecot/dh.pem ]; then
 
         echo "[Information] Creating DHPEM Key"
 
-        openssl dhparam -out /ssl/dovecot/dh.pem 4096
+        openssl dhparam -out /certs/dovecot/dh.pem 4096
 
     fi
 
@@ -68,11 +68,11 @@ postconf -e "myhostname = $(`echo hostname -f`)"
     sed -i -r -e 's/^\$manpage_directory/#$manpage_directory/' /etc/postfix/postfix-files.d/*
 
 
-    if [ ! -f /ssl/postfix/key.pem ]; then
+    if [ ! -f /certs/postfix/key.pem ]; then
 
         echo "[WARNING] Creating Self-signed TLS Cert. Consider using letsencrypt or another trusted CA"
 
-        openssl req  -nodes -new -x509 -keyout /ssl/postfix/key.pem -out /ssl/postfix/cert.pem -subj '/CN=localhost'
+        openssl req  -nodes -new -x509 -keyout /certs/postfix/key.pem -out /certs/postfix/cert.pem -subj '/CN=localhost'
 
     fi
 

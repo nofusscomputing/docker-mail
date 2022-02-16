@@ -86,7 +86,7 @@ services:
     hostname: mail.nofusscomputing.com
     volumes:
       - mail_store:/srv/mail:rw
-      - mail_ssl:/ssl
+      - mail_ssl:/certs
       - sa_learn:/var/spool/spamassassin
       - mail_backup:/backup
       - mail_log:/var/log

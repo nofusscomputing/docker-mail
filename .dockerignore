@@ -1,0 +1,14 @@
+# Directories
+.git/
+.gitlab/
+gitlab-ci/
+test/
+.vscode/
+
+# Files
+.cz.yaml
+.gitignore
+.gitlab-ci.yml
+.gitmodules
+.markdownlint.json
+*.md

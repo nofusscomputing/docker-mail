@@ -58,11 +58,14 @@ Docker Container:
 
 #  after_script:
 #    - docker push $CI_REGISTRY_IMAGE/docker-mail:$CI_COMMIT_SHA
+  allow_failure: true
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: never
     - if: $CI_COMMIT_TAG
       when: on_success
+    - if: '$CI_COMMIT_BRANCH == "development" && $CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: on_success
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
     - if: '$CI_COMMIT_BRANCH != "master"'
       when: manual
     - when: never
@@ -89,26 +92,49 @@ Docker Hub:
 #    - if [ "m$(echo $CI_BUILD_REF_NAME | grep rc)" == "m$CI_BUILD_REF_NAME" ]; then Branch_TAG=dev; else Branch_TAG=stable; fi
     - echo Branch tag is $Branch_TAG
     - docker image ls
-    - docker image tag $CI_REGISTRY_IMAGE/docker-mail:$CI_COMMIT_SHA nofusscomputing/docker-mail:$CI_COMMIT_TAG
-    - docker image ls
-    - docker push nofusscomputing/docker-mail:$CI_COMMIT_TAG
-  rules:
-    - if: $CI_COMMIT_TAG
-      when: on_success
-    - if: $CI_MERGE_REQUEST_IID
-      when: never
-    - if: '$CI_COMMIT_BRANCH'
-      when: never
+    - |
+      if [ "0$CI_PIPELINE_SOURCE" == "0merge_request_event" ]; then
+
+        if [ "0$CI_COMMIT_BRANCH" == "0development" ]; then
+
+          DH_LATEST_TAG=dev
+
+        fi
+
+      elif [ "0$CI_COMMIT_TAG" != "0" ] ; then
+
+        DH_LATEST_TAG=latest
+
+        docker image ls;
+      
+        docker push nofusscomputing/docker-mail:$CI_COMMIT_TAG;
+
+        docker image tag $CI_REGISTRY_IMAGE/docker-mail:$CI_COMMIT_SHA nofusscomputing/docker-mail:$CI_COMMIT_TAG;
+
+      fi
+
+      if [ "0$DH_LATEST_TAG" != "0" ]; then
+
+        docker image tag $CI_REGISTRY_IMAGE/docker-mail:$CI_COMMIT_SHA nofusscomputing/docker-mail:$DH_LATEST_TAG;
+
+        docker image ls;
+
+        docker push nofusscomputing/docker-mail:$DH_LATEST_TAG;
+
+      fi  
   needs: [ "Docker Container" ]
   environment:
     name: DockerHub
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: never
     - if: $CI_COMMIT_TAG
       when: on_success
+    - if: '$CI_COMMIT_BRANCH == "development" && $CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: on_success
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH'
+      when: never
     - when: never
-
 
 
 Github (Push --mirror):

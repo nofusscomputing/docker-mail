@@ -83,7 +83,7 @@ services:
     restart: unless-stopped
     cpus: 2
     mem_limit: 512MB
-    hostname: test.example.org
+    hostname: test.nodomain.org
     volumes:
       - mail_store:/srv/mail:rw
       - mail_ssl:/certs

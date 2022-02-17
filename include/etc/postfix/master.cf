@@ -14,7 +14,7 @@ smtp      inet  n       -       y       -       1       postscreen
 smtpd     pass  -       -       y       -       -       smtpd
   -o syslog_name=postfix/inbound
   -o smtpd_tls_security_level=may
-  -o smtpd_recipient_restrictions=reject_non_fqdn_recipient,reject_unknown_recipient_domain,reject_unauth_destination,permit_auth_destination,reject
+  -o smtpd_recipient_restrictions=reject_non_fqdn_recipient,reject_unknown_recipient_domain,reject_unknown_sender_domain,reject_unauth_destination,check_policy_service,unix:private/policyd-spf,permit_auth_destination,reject
 
 #dnsblog   unix  -       -       y       -       0       dnsblog
 #tlsproxy  unix  -       -       y       -       0       tlsproxy
@@ -63,6 +63,8 @@ amavis unix -      -       n     -       2  smtp
   -o receive_override_options=no_header_body_checks,no_unknown_recipient_checks
   -o content_filter=
 
+policyd-spf unix -     n       n       -       2       spawn
+  user=policyd-spf argv=/usr/bin/policyd-spf
 
 #spamassassin unix -     n       n       -       -       pipe 
 #  user=debian-spamd argv=/usr/bin/spamc -f -e /usr/sbin/sendmail -oi -f ${sender} ${recipient}

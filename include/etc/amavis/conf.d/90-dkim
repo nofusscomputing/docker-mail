@@ -7,3 +7,5 @@ $policy_bank{'SUBMISSION'} = {
     originating => 1,
     smtpd_discard_ehlo_keywords => ['8BITMIME']
 };
+
+$enable_dkim_verification = 1;

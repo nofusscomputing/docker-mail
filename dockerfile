@@ -74,7 +74,9 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends 
       libio-lockedfile-perl \
         # DKIM
       opendkim=2.11.0~beta2-4 \
-      opendkim-tools=2.11.0~beta2-4
+      opendkim-tools=2.11.0~beta2-4 \
+        # SPF
+      postfix-policyd-spf-python=2.9.2-1
 
 
 # Cleanup, remove cron jobs not required
@@ -187,7 +189,9 @@ RUN postconf -e "maillog_file=/var/log/postfix.log" \
   && postconf -e "smtpd_tls_protocols=!SSLv2,!SSLv3,!TLSv1,!TLSv1.1" \
   && postconf -e "smtp_tls_protocols=!SSLv2,!SSLv3,!TLSv1,!TLSv1.1" \
   && postconf -e "smtpd_tls_mandatory_ciphers=high" \
-  && postconf -e "smtpd_tls_mandatory_protocols=!SSLv2,!SSLv3,!TLSv1,!TLSv1.1"
+  && postconf -e "smtpd_tls_mandatory_protocols=!SSLv2,!SSLv3,!TLSv1,!TLSv1.1" \
+     # SPF postfix Settings
+  && postconf -e "policyd-spf_time_limit=3600"
     
 EXPOSE 25 587 993 4190
 

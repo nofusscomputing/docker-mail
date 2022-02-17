@@ -1,3 +1,34 @@
+## v0.1.0rc1 (2022-02-17)
+
+### Code Refactor
+
+- [bde6c054](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/bde6c054bbe4bea0a14509070fed9328138dbb1d) - conf config values updated [ [!6](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/6) ]
+- **amavis**: [53e0cdd1](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/53e0cdd17139bdd3e6df079edec3c88ef12a5c1a) - move dkim key config to own file [ [!4](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/4) ]
+- [3e30b278](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/3e30b2780ef53ef12d036d0e009bff19b96dd8e2) - ci code review suggestions [ [!2](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/2) ]
+- **amavis**: [d8e51085](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/d8e51085a1e0598e564030790b1d0fcf5dd8fb17) - seperate config for socket [ [!2](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/2) ]
+- **ssl**: [09aabeb6](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/09aabeb68aae478bd125e48b4bfaecaa7a97b1ae) - Moved /ssl to /certs [ [!2](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/2) ]
+
+### Continious Integration
+
+- **docker_hub**: [27ad07ea](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/27ad07ead345bbf7b0c929adbfd24947ef977e40) - fix dev push [ [!5](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/5) ]
+- **docker_hub**: [aafd9acc](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/aafd9acca9fe98bad1710a4af2f1b0eabadd6944) - ensure build and DH push works on merge [ [!4](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/4) ]
+- **docker_hub**: [36808960](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/36808960ce9a1369eebcaf0fe878d85bdbd37ced) - push a dev and latest tag to docker hub [ [!2](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/2) ]
+- **docker_hub**: [76c899e2](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/76c899e285f7ea816d6fc4c7e78644302b5921b3) - removed duplicate rules section [ [!2](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/2) ]
+- **docker_container**: [23830c85](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/23830c85510c5cff6da80fa6ab617b8580e29739) - set to allow failure [ [!2](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/2) ]
+
+### Documentaton / Guides
+
+- **spf**: [a71e7691](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/a71e7691a2188fb9372c2e7c9b32cb39adb4e8ce) - added basic spf guide [ [!6](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/6) ]
+- [be42d0ad](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/be42d0ad3ba83717a9c4e907a48fd087539e720f) - Addied initial documentation for dkim [ [!4](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/4) ]
+
+### Features
+
+- **amavis**: [92e4e4b2](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/92e4e4b2d55ab538eda937bc698d7a11961c47b6) - added DKIM verification [ [!6](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/6) ]
+- **spf**: [245aa724](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/245aa724d2d8121c7a758da6e086fe0a59c751d8) - conduct spf check for inbound smtp [ [!6](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/6) ]
+- **posfix**: [b795fe5b](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/b795fe5b67ecdfaa9390d2028478fd0b6570cfcc) - configure submission to dkim sign [ [!2](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/2) ]
+- **amavis**: [b9b2527a](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/b9b2527a42586843faea3ad074c1d34392b5d1d8) - Configured dkim [ [!2](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/2) ]
+- **dkim**: [72ee475b](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/72ee475be7c459531762d489dd649d696a6f47be) - Added OpenDKIM to image [ [!2](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/2) ]
+
 ## v0.1.0rc0 (2022-02-14)
 
 ### Bug Fixes

@@ -121,6 +121,7 @@ Docker Hub:
   needs: [ "Docker Container" ]
   environment:
     name: DockerHub
+    url: https://hub.docker.com/r/nofusscomputing/docker-mail
   rules:
     - if: $CI_COMMIT_TAG
       when: on_success

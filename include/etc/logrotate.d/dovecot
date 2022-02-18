@@ -6,7 +6,6 @@
     notifempty
     compress
     delaycompress
-    extension log
     create 0644 dovecot dovecot
          postrotate
              supervisorctl restart dovecot

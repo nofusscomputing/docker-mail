@@ -181,7 +181,7 @@ RUN postconf -e "maillog_file=/var/log/postfix.log" \
   # Only add missing headers for authenticated users (mail users) and my networks and mail orginating from localhost
   && postconf -e "local_header_rewrite_clients=permit_sasl_authenticated,permit_mynetworks,permit_inet_interfaces" \
   # set tls settings
-  && postfonf -e "tls_preempt_cipherlist = yes" \
+  && postconf -e "tls_preempt_cipherlist = yes" \
   && postconf -e "tls_ssl_options = NO_COMPRESSION, NO_RENEGOTIATION" \
   && postconf -e "smtpd_tls_cert_file=/certs/postfix/cert.pem" \
   && postconf -e "smtpd_tls_key_file=/certs/postfix/key.pem" \

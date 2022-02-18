@@ -197,6 +197,8 @@ RUN postconf -e "maillog_file=/var/log/postfix.log" \
   && postconf -e "smtpd_client_restrictions=reject_unauth_destination,reject_unauth_pipelining,permit_mynetworks,permit_auth_destination,reject" \
     # HELO/EHLO restrictions
   && postconf -e "smtpd_helo_restrictions=permit_mynetworks,reject_invalid_helo_hostname,permit" \
+    # MAIL FROM restrictions
+  && postconf -e "smtpd_sender_restrictions=permit_mynetworks,reject_non_fqdn_sender,permit" \
     
 EXPOSE 25 587 993 4190
 

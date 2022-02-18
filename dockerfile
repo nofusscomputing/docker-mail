@@ -179,6 +179,7 @@ RUN postconf -e "maillog_file=/var/log/postfix.log" \
   # Only add missing headers for authenticated users (mail users) and my networks and mail orginating from localhost
   && postconf -e "local_header_rewrite_clients=permit_sasl_authenticated,permit_mynetworks,permit_inet_interfaces" \
   # set tls settings
+  && postconf -e "tls_ssl_options = NO_COMPRESSION, NO_RENEGOTIATION" \
   && postconf -e "smtpd_tls_cert_file=/certs/postfix/cert.pem" \
   && postconf -e "smtpd_tls_key_file=/certs/postfix/key.pem" \
   && postconf -e "smtpd_helo_required = yes" \
@@ -201,7 +202,7 @@ RUN postconf -e "maillog_file=/var/log/postfix.log" \
     # RCPT TO restrictions
   && postconf -e "smtpd_recipient_restrictions=permit_mynetworks,reject_non_fqdn_recipient,reject_unknown_recipient_domain,reject_unauth_destination,check_policy_service,unix:private/policyd-spf,check_policy_service unix:private/quota,permit_auth_destination,reject" \
     # RCPT TO restrictions
-  && postconf -e "smtpd_relay_restrictions=reject_non_fqdn_recipient,permit_auth_destination,reject" \
+  && postconf -e "smtpd_relay_restrictions=reject_non_fqdn_recipient,permit_auth_destination,reject"
     
 EXPOSE 25 587 993 4190
 

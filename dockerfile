@@ -213,5 +213,6 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends 
       procps \
       vim \
       iputils-ping \
-      python3-ldap
+      python3-ldap \
+      net-tools
 #    && freshclam

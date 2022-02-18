@@ -191,7 +191,10 @@ RUN postconf -e "maillog_file=/var/log/postfix.log" \
   && postconf -e "smtpd_tls_mandatory_ciphers=high" \
   && postconf -e "smtpd_tls_mandatory_protocols=!SSLv2,!SSLv3,!TLSv1,!TLSv1.1" \
      # SPF postfix Settings
-  && postconf -e "policyd-spf_time_limit=3600"
+  && postconf -e "policyd-spf_time_limit=3600" \
+    # Connection defaults to reject where possible/advised
+    # Client command restrictions
+  && postconf -e "smtpd_client_restrictions=reject_unauth_destination,reject_unauth_pipelining,permit_mynetworks,permit_auth_destination,reject" \
     
 EXPOSE 25 587 993 4190
 

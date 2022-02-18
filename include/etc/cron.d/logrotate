@@ -1,0 +1,6 @@
+#
+#  Run Log rotate 
+#
+# m h dom mon dow user  command
+1 0	* * *	root	/usr/sbin/logrotate -f /etc/logrotate.conf >/dev/null
+

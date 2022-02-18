@@ -82,7 +82,8 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends 
 # Cleanup, remove cron jobs not required
 RUN rm -f /etc/cron.d/e2scrub_all \
     && rm -f /etc/cron.daily/apt-compat \
-    && rm -f /etc/cron.daily/dpkg
+    && rm -f /etc/cron.daily/dpkg \
+    && rm -f /etc/cron.daily/logrotate
 
 
 COPY include/ /

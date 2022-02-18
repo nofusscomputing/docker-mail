@@ -152,6 +152,8 @@ RUN postconf -e "maillog_file=/var/log/postfix.log" \
   && postconf -e "virtual_mailbox_domains=ldap:/etc/postfix/ldap/virtual_email_domains" \
   # postfix user mapping 
   && postconf -e "virtual_alias_maps=ldap:/etc/postfix/ldap/virtual_alias_maps" \
+    # Only trust localhost
+  && postconf -e "mynetworks_style = host" \
   # by default encryption is optional
   && postconf -e "smtpd_tls_security_level=may" \
   # log outbound tls connection information

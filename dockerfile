@@ -82,7 +82,8 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends 
 # Cleanup, remove cron jobs not required
 RUN rm -f /etc/cron.d/e2scrub_all \
     && rm -f /etc/cron.daily/apt-compat \
-    && rm -f /etc/cron.daily/dpkg
+    && rm -f /etc/cron.daily/dpkg \
+    && rm -f /etc/cron.daily/logrotate
 
 
 COPY include/ /
@@ -151,6 +152,8 @@ RUN postconf -e "maillog_file=/var/log/postfix.log" \
   && postconf -e "virtual_mailbox_domains=ldap:/etc/postfix/ldap/virtual_email_domains" \
   # postfix user mapping 
   && postconf -e "virtual_alias_maps=ldap:/etc/postfix/ldap/virtual_alias_maps" \
+    # Only trust localhost
+  && postconf -e "mynetworks_style = host" \
   # by default encryption is optional
   && postconf -e "smtpd_tls_security_level=may" \
   # log outbound tls connection information
@@ -177,9 +180,9 @@ RUN postconf -e "maillog_file=/var/log/postfix.log" \
   && postconf -e "always_add_missing_headers=yes" \
   # Only add missing headers for authenticated users (mail users) and my networks and mail orginating from localhost
   && postconf -e "local_header_rewrite_clients=permit_sasl_authenticated,permit_mynetworks,permit_inet_interfaces" \
-  # check quota before delivery
-  && postconf -e "smtpd_recipient_restrictions=check_policy_service=inet:localhost:12340" \
   # set tls settings
+  && postfonf -e "tls_preempt_cipherlist = yes" \
+  && postconf -e "tls_ssl_options = NO_COMPRESSION, NO_RENEGOTIATION" \
   && postconf -e "smtpd_tls_cert_file=/certs/postfix/cert.pem" \
   && postconf -e "smtpd_tls_key_file=/certs/postfix/key.pem" \
   && postconf -e "smtpd_helo_required = yes" \
@@ -191,7 +194,18 @@ RUN postconf -e "maillog_file=/var/log/postfix.log" \
   && postconf -e "smtpd_tls_mandatory_ciphers=high" \
   && postconf -e "smtpd_tls_mandatory_protocols=!SSLv2,!SSLv3,!TLSv1,!TLSv1.1" \
      # SPF postfix Settings
-  && postconf -e "policyd-spf_time_limit=3600"
+  && postconf -e "policyd-spf_time_limit=3600" \
+    # Connection defaults to reject where possible/advised
+    # Client command restrictions
+  && postconf -e "smtpd_client_restrictions=reject_unauth_destination,reject_unauth_pipelining,permit_mynetworks,permit_auth_destination,reject" \
+    # HELO/EHLO restrictions
+  && postconf -e "smtpd_helo_restrictions=permit_mynetworks,reject_invalid_helo_hostname,permit" \
+    # MAIL FROM restrictions
+  && postconf -e "smtpd_sender_restrictions=permit_mynetworks,reject_non_fqdn_sender,permit" \
+    # RCPT TO restrictions
+  && postconf -e "smtpd_recipient_restrictions=permit_mynetworks,reject_non_fqdn_recipient,reject_unknown_recipient_domain,reject_unauth_destination,check_policy_service,unix:private/policyd-spf,check_policy_service unix:private/quota,permit_auth_destination,reject" \
+    # RCPT TO restrictions
+  && postconf -e "smtpd_relay_restrictions=reject_non_fqdn_recipient,permit_auth_destination,reject"
     
 EXPOSE 25 587 993 4190
 
@@ -204,5 +218,6 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends 
       procps \
       vim \
       iputils-ping \
-      python3-ldap
+      python3-ldap \
+      net-tools
 #    && freshclam

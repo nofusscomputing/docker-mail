@@ -14,7 +14,6 @@ smtp      inet  n       -       y       -       1       postscreen
 smtpd     pass  -       -       y       -       -       smtpd
   -o syslog_name=postfix/inbound
   -o smtpd_tls_security_level=may
-  -o smtpd_recipient_restrictions=reject_non_fqdn_recipient,reject_unknown_recipient_domain,reject_unknown_sender_domain,reject_unauth_destination,check_policy_service,unix:private/policyd-spf,permit_auth_destination,reject
 
 #dnsblog   unix  -       -       y       -       0       dnsblog
 #tlsproxy  unix  -       -       y       -       0       tlsproxy
@@ -29,7 +28,7 @@ submission inet n       -       y       -       -       smtpd
   -o smtpd_client_restrictions=permit_sasl_authenticated,reject
   -o smtpd_sender_login_maps=ldap:/etc/postfix/ldap/smtpd_sender_login_maps,ldap:/etc/postfix/ldap/smtpd_sender_login_maps_groups
   -o smtpd_sender_restrictions=reject_sender_login_mismatch
-  -o smtpd_recipient_restrictions=reject_non_fqdn_recipient,reject_unknown_recipient_domain,permit_sasl_authenticated,reject
+  -o smtpd_recipient_restrictions=reject_non_fqdn_recipient,reject_unknown_recipient_domain,check_policy_service,unix:private/quota,permit_sasl_authenticated,reject
   -o cleanup_service_name=privacy
   -o content_filter=amavis:[127.0.0.1]:10023
 

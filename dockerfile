@@ -205,7 +205,8 @@ RUN postconf -e "maillog_file=/var/log/postfix.log" \
     # RCPT TO restrictions
   && postconf -e "smtpd_recipient_restrictions=permit_mynetworks,reject_non_fqdn_recipient,reject_unknown_recipient_domain,reject_unauth_destination,check_policy_service,unix:private/policyd-spf,check_policy_service unix:private/quota,permit_auth_destination,reject" \
     # RCPT TO restrictions
-  && postconf -e "smtpd_relay_restrictions=reject_non_fqdn_recipient,permit_auth_destination,reject"
+  && postconf -e "smtpd_relay_restrictions=reject_non_fqdn_recipient,permit_auth_destination,reject" \
+  && postconf -e "smtpd_sasl_security_options = noanonymous"
     
 EXPOSE 25 587 993 4190
 

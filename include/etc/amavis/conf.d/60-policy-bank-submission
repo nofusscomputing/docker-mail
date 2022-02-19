@@ -4,5 +4,7 @@ $interface_policy{'10023'} = 'SUBMISSION';
 $policy_bank{'SUBMISSION'} = {
     originating => 1,
     smtpd_discard_ehlo_keywords => ['8BITMIME'],
+    final_spam_destiny => D_BOUNCE, # Bounce so user is notified
+    final_virus_destiny => D_BOUNCE, # Bounce so user is notified
 };
 

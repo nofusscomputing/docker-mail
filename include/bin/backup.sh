@@ -9,6 +9,7 @@ start=$(date '+%s')
 
 includes=(/srv/mail)
 includes+=(/ssl)
+includes+=(/var/spool/postfix)
 includes+=(/var/spool/spamassassin)
 includes+=(/var/log)
 includes+=(/var/lib/amavis)

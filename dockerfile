@@ -144,7 +144,7 @@ RUN chmod +x /docker-entrypoint.sh \
         
 
 # Setup data volumes
-VOLUME /srv/mail /certs /var/spool/spamassassin /backup /var/log
+VOLUME /srv/mail /certs /var/spool/postfix /var/spool/spamassassin /backup /var/log
 
 # Configure postfix
 RUN postconf -e "maillog_file=/var/log/postfix.log" \

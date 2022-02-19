@@ -136,7 +136,9 @@ RUN chmod +x /docker-entrypoint.sh \
       # Amavis DKIM related commands
     && mkdir -p /certs/amavis/dkim/ \
     && chown root:amavis /certs/amavis/dkim/ \
-    && chmod 750 /certs/amavis/dkim/
+    && chmod 750 /certs/amavis/dkim/ \
+    && usermod -a -G vmail amavis \
+    && usermod -a -G vmail opendkim
         
 
 # Setup data volumes

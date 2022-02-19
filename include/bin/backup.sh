@@ -15,7 +15,9 @@ includes+=(/var/log)
 includes+=(/var/lib/amavis)
 
 
-backup_command="tar -czpvf $back_file_name ${includes[@]}"
+excludes=(--exclude=*.sock)
+
+backup_command="tar -czpvf $back_file_name ${excludes[@]} ${includes[@]}"
 
 cd /tmp
 

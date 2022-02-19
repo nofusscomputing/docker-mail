@@ -99,7 +99,15 @@ Docker Hub:
 
       elif [ "0$CI_COMMIT_TAG" != "0" ] ; then
 
-        DH_LATEST_TAG=latest
+        if [ "0$CI_COMMIT_TAG" == *"rc"* ]; then
+        
+          DH_LATEST_TAG=dev
+
+        else
+
+          DH_LATEST_TAG=latest
+
+        fi
 
         docker image tag $CI_REGISTRY_IMAGE/docker-mail:$CI_COMMIT_SHA nofusscomputing/docker-mail:$CI_COMMIT_TAG;
 

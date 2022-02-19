@@ -8,13 +8,16 @@ back_file_name="mail_server-$backup_version-$(date +%Y-%m-%d-%H%M-%Z).tar.gz"
 start=$(date '+%s')
 
 includes=(/srv/mail)
-includes+=(/ssl)
+includes+=(/certs)
+includes+=(/var/spool/postfix)
 includes+=(/var/spool/spamassassin)
 includes+=(/var/log)
 includes+=(/var/lib/amavis)
 
 
-backup_command="tar -czpvf $back_file_name ${includes[@]}"
+excludes=(--exclude=*.sock)
+
+backup_command="tar -czpvf $back_file_name ${excludes[@]} ${includes[@]}"
 
 cd /tmp
 

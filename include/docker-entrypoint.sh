@@ -33,6 +33,10 @@ done
 
 mkdir -p /var/lock/fetchmail
 
+chown debian-spamd:vmail -R /var/spool/spamassassin
+
+chmod 777 /var/spool/spamassassin
+
 if [ "$1" == "setup" ]; then
 
 

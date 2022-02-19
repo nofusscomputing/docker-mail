@@ -126,6 +126,8 @@ RUN chmod +x /docker-entrypoint.sh \
       # Spammassassin related Commands
     && mkdir -p /var/spool/spamassassin \
     && chmod 777 /var/spool/spamassassin \
+    && usermod -a -G vmail debian-spamd \
+    && chown debian-spamd:vmail -R /var/spool/spamassassin \
       # Ensure spamassassin related scripts are executable
     && chmod +x /bin/spam-learn.sh \
        # fetchmail.pl setup

@@ -1,0 +1,8 @@
+
+$interface_policy{'10023'} = 'SUBMISSION';
+
+$policy_bank{'SUBMISSION'} = {
+    originating => 1,
+    smtpd_discard_ehlo_keywords => ['8BITMIME'],
+};
+

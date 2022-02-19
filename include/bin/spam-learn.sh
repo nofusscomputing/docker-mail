@@ -16,9 +16,9 @@ SPAM_REPORT=''
 for i in /srv/mail/* ; do
   if [ -d "$i" ]; then
 
-    HAM_REPORT=$(printf "$HAM_REPORT\n\nMailbox: $i\n    $(sa-learn --ham --showdots --no-sync $i/mail/cur)\n")
+    HAM_REPORT=$(printf "$HAM_REPORT\n\nMailbox: $i\n    $(sa-learn --ham --showdots --sync $i/mail/cur)\n")
 
-    SPAM_REPORT=$(printf "$SPAM_REPORT\n\nMailbox: $i\n    $(sa-learn --spam --showdots --no-sync $i/mail/Spam/cur)\n")
+    SPAM_REPORT=$(printf "$SPAM_REPORT\n\nMailbox: $i\n    $(sa-learn --spam --showdots --sync $i/mail/Spam/cur)\n")
 
   fi
 done

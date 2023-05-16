@@ -45,8 +45,8 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends 
       dovecot-sieve=2:2.3.18-4+debian11 \
       dovecot-managesieved=2:2.3.18-4+debian11 \
         # Postfix
-      postfix=3.5.6-1+b1 \
-      postfix-ldap=3.5.6-1+b1 \
+      postfix=3.5.18-0+deb11u1 \
+      postfix-ldap=3.5.18-0+deb11u1 \
       libsasl2-modules \
       sasl2-bin \
         # Amavis
@@ -77,7 +77,7 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends 
       opendkim=2.11.0~beta2-4 \
       opendkim-tools=2.11.0~beta2-4 \
         # SPF
-      postfix-policyd-spf-python=2.9.2-1
+      postfix-policyd-spf-python=2.9.2-1+deb11u1
 
 
 # Cleanup, remove cron jobs not required

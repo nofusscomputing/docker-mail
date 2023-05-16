@@ -19,9 +19,13 @@ include:
 
 
 variables:
-    GIT_SUBMODULE_STRATEGY: recursive
-    GIT_SYNC_URL: "https://$GITHUB_USERNAME_ROBOT:$GITHUB_TOKEN_ROBOT@github.com/NoFussComputing/docker-mail.git"
-    MY_PROJECT_ID: "33611657"
+  DOCKER_IMAGE_PUBLISH_NAME: 'docker-mail'
+  DOCKER_IMAGE_PUBLISH_REGISTRY: docker.io/nofusscomputing
+  DOCKER_IMAGE_PUBLISH_URL: https://hub.docker.com/r/nofusscomputing/$DOCKER_IMAGE_PUBLISH_NAME
+
+  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_SYNC_URL: "https://$GITHUB_USERNAME_ROBOT:$GITHUB_TOKEN_ROBOT@github.com/NoFussComputing/docker-mail.git"
+  MY_PROJECT_ID: "33611657"
 
 
 # Markdown Linting:

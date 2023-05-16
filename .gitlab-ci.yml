@@ -3,7 +3,7 @@
 
 include:
   - project: nofusscomputing/projects/gitlab-ci
-    ref: development
+    ref: ansible-role
     file:
       - .gitlab-ci_common.yaml
       - type/docker-image.gitlab-ci.yaml

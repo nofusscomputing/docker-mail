@@ -1,5 +1,210 @@
-FROM debian:11.7-slim
 
+
+
+# FROM --platform=$TARGETPLATFORM debian:11.7-slim as compile-dovecot
+# # ref: https://doc.dovecot.org/installation_guide/dovecot_community_repositories/compiling_source/
+
+
+# ARG CI_JOB_TOKEN
+# ARG CI_API_V4_URL
+# ARG CI_PROJECT_ID
+
+# ARG DOVECOT_BUILD_VERSION=2.3.18
+# ARG PIGEONHOLE_BUILD_VERSION=0.5.20
+
+# ARG DEBIAN_FRONTEND=noninteractive
+
+
+# RUN export && apt update \
+#   && apt -y install --reinstall --fix-missing \
+#       wget \
+#       autoconf \
+#       automake \
+#       libtool \
+#       pkg-config \
+#       gettext \
+#       pandoc \
+#       make \
+#       git \
+#       ca-certificates \
+#       libssl-dev \
+#       bison \
+#       flex \
+#       curl \
+#       checkinstall \
+#       zlib1g-dev 
+
+
+# RUN mkdir -p /tmp/build \
+#     && cd /tmp/build \
+#     && git clone --depth=1 -b release-${DOVECOT_BUILD_VERSION} https://github.com/dovecot/core.git dovecot
+
+
+# RUN cd /tmp/build/dovecot \
+#     && ./autogen.sh \
+#     && ./configure --enable-maintainer-mode --sysconfdir=/etc \
+#     # && make \
+#     && ls -la
+
+# RUN /bin/mkdir -p '/usr/local/lib/dovecot' \
+#                   '/usr/local/share/dovecot/stopwords' \
+#                   '/usr/local/libexec/dovecot' \
+#                   '/usr/local/lib/dovecot/auth' \
+#                   '/usr/local/lib/dovecot/old-stats' \
+#                   '/usr/local/lib/dovecot/doveadm' \
+#                   '/usr/local/share/doc/dovecot/wiki' \
+#                   '/usr/local/share/doc/dovecot/example-config/conf.d'
+
+
+# RUN cd /tmp/build/dovecot && checkinstall --pkgname=dovecot-core --pkgversion=${DOVECOT_BUILD_VERSION} --pkgarch=$(echo `dpkg --print-architecture`) -D -y \
+#     && ls -la
+
+
+# RUN cd /tmp/build/dovecot && curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --verbose \
+#      --upload-file dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb \
+#      "https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/packages/generic/dovecot/${DOVECOT_BUILD_VERSION}/dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb"
+
+# # ./configure --sysconfdir=/etc --with-dovecot=/etc/dovecot/
+# # apt install build-essential dh-autoreconf libssl-dev checkinstall
+# # RUN cd /tmp/build/ && git clone -b $PIGEONHOLE_BUILD_VERSION --depth=1 https://github.com/dovecot/pigeonhole.git pigeonhole \
+# #   && cd pigeonhole \
+# #   && ./autogen.sh \
+# #   && ./configure --sysconfdir=/etc --with-dovecot-install-dirs \
+# #   # && make \
+# #   && mkdir -p '/usr/local/lib/dovecot/sieve' \
+# #               '/usr/local/lib/dovecot/settings' \
+# #               '/usr/local/share/doc/dovecot/example-config'  \
+# #               '/usr/local/share/doc/dovecot/sieve/extensions'
+
+# # RUN cd /tmp/build/pigeonhole && checkinstall --pkgname=dovecot-pigeonhole --pkgversion=${DOVECOT_BUILD_VERSION} --pkgarch=$(echo `dpkg --print-architecture`) -D -y
+
+# # RUN cd /tmp/build/pigeonhole && curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --verbose \
+# #      --upload-file dovecot-pigeonhole_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb \
+# #      "https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/packages/generic/dovecot/${DOVECOT_BUILD_VERSION}/dovecot-pigeonhole_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb"
+
+
+
+
+# FROM --platform=$TARGETPLATFORM debian:11.7-slim as compile-pigeonhole
+# # ref: https://doc.dovecot.org/installation_guide/dovecot_community_repositories/compiling_source/
+
+
+# ARG CI_JOB_TOKEN
+# ARG CI_API_V4_URL
+# ARG CI_PROJECT_ID
+
+# ARG DOVECOT_BUILD_VERSION=2.3.18
+# ARG PIGEONHOLE_BUILD_VERSION=0.5.20
+
+# ARG DEBIAN_FRONTEND=noninteractive
+
+
+# RUN export && apt update \
+#   && apt -y install --reinstall --fix-missing \
+#       wget \
+#       autoconf \
+#       automake \
+#       libtool \
+#       pkg-config \
+#       gettext \
+#       pandoc \
+#       make \
+#       git \
+#       ca-certificates \
+#       libssl-dev \
+#       bison \
+#       flex \
+#       curl \
+#       checkinstall \
+#       # build-essential \
+#       # crossbuild-essential-arm64 \
+#       zlib1g-dev 
+
+
+# # ./autogen.sh
+# # ./autogen.sh --build=x86_64-linux-gnu --host=aarch64-linux-gnu
+# # ./configure --enable-maintainer-mode --build=x86_64-linux-gnu --host=aarch64-linux-gnu
+# #
+# # checkinstall --install=no --pkgname=dovecot-core --pkgversion=2.3.18 --pkgarch=$(echo `dpkg --print-architecture`)
+
+# # RUN mkdir -p /tmp/build \
+# #     && cd /tmp/build \
+# #     && git clone --depth=1 -b release-${DOVECOT_BUILD_VERSION} https://github.com/dovecot/core.git dovecot
+
+
+# # RUN cd /tmp/build/dovecot \
+# #     && ./autogen.sh \
+# #     && ./configure --enable-maintainer-mode --sysconfdir=/etc \
+# #     && make \
+# #     && ls -la
+
+# # RUN /bin/mkdir -p '/usr/local/lib/dovecot' \
+# #                   '/usr/local/share/dovecot/stopwords' \
+# #                   '/usr/local/libexec/dovecot' \
+# #                   '/usr/local/lib/dovecot/auth' \
+# #                   '/usr/local/lib/dovecot/old-stats' \
+# #                   '/usr/local/lib/dovecot/doveadm' \
+# #                   '/usr/local/share/doc/dovecot/wiki' \
+# #                   '/usr/local/share/doc/dovecot/example-config/conf.d'
+# #                   # '/usr/local/include/dovecot' \
+# #                   # '/usr/local/include/dovecot'
+
+
+# # RUN cd /tmp/build/dovecot && checkinstall --pkgname=dovecot-core --pkgversion=${DOVECOT_BUILD_VERSION} --pkgarch=$(echo `dpkg --print-architecture`) -D -y \
+# #     && ls -la
+
+# # # RUN cd /tmp/build/dovecot && ls -la && boo
+# # ## update-version.sh before build
+
+
+# # RUN cd /tmp/build/dovecot && curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --verbose \
+# #      --upload-file dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb \
+# #      "https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/packages/generic/dovecot/${DOVECOT_BUILD_VERSION}/dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb"
+
+# RUN cd tmp && curl --header "JOB-TOKEN: $CI_JOB_TOKEN" \
+#             "https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/packages/generic/dovecot/${DOVECOT_BUILD_VERSION}/dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb" -o "dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb" \
+#             && dpkg -i dovecot-core_$DOVECOT_BUILD_VERSION-1_$(echo `dpkg --print-architecture`).deb
+
+# # ./configure --sysconfdir=/etc --with-dovecot=/etc/dovecot/
+# # apt install build-essential dh-autoreconf libssl-dev checkinstall
+# RUN mkdir -p /tmp/build \
+#   && cd /tmp/build/ && git clone -b $PIGEONHOLE_BUILD_VERSION --depth=1 https://github.com/dovecot/pigeonhole.git pigeonhole \
+#   && cd pigeonhole \
+#   && ./autogen.sh \
+#   && ./configure --sysconfdir=/etc --with-dovecot-install-dirs \
+#   # && ./configure --sysconfdir=/etc \
+#   # && make \
+#   && mkdir -p '/usr/local/lib/dovecot/sieve' \
+#               '/usr/local/lib/dovecot/settings' \
+#               '/usr/local/share/doc/dovecot/example-config'  \
+#               '/usr/local/share/doc/dovecot/sieve/extensions'
+
+# RUN cd /tmp/build/pigeonhole && checkinstall --pkgname=dovecot-pigeonhole --pkgversion=${DOVECOT_BUILD_VERSION} --pkgarch=$(echo `dpkg --print-architecture`) -D -y
+
+# RUN cd /tmp/build/pigeonhole && curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --verbose \
+#      --upload-file dovecot-pigeonhole_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb \
+#      "https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/packages/generic/dovecot/${DOVECOT_BUILD_VERSION}/dovecot-pigeonhole_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb"
+
+
+
+
+FROM --platform=$TARGETPLATFORM debian:11.7-slim as build
+
+
+ARG CI_JOB_TOKEN
+ARG CI_API_V4_URL
+ARG CI_PROJECT_ID
+
+ARG DOVECOT_BUILD_VERSION=2.3.18
+# 2:2.3.18-4+debian11
+ARG DOVECOT_BUILD_VERSION_DEBIAN_APT=2:$DOVECOT_BUILD_VERSION-4+debian11
+
+ARG PIGEONHOLE_BUILD_VERSION=0.5.20
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+
+#COPY apt_proxy.conf /etc/apt/apt.conf.d/apt_proxy.conf
 
 LABEL \
   #org.opencontainers.image.created="" \ # set during build with $(date --rfc-3339=seconds) \
@@ -16,9 +221,8 @@ LABEL \
   org.opencontainers.image.description="A Complete mailserver in a container"
 
 
-
 # Install dependencies
-RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends install \
+RUN apt update && apt -y --no-install-recommends install \
       curl \
       gpg \ 
       gpg-agent \ 
@@ -26,24 +230,29 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends 
       ca-certificates \
       supervisor
 
-RUN curl https://repo.dovecot.org/DOVECOT-REPO-GPG | gpg --import && \
-    gpg --export ED409DA1 > /etc/apt/trusted.gpg.d/dovecot.gpg
 
-#RUN echo "deb https://repo.dovecot.org/ce-2.3-latest/debian/bullseye bullseye main" > /etc/apt/sources.list.d/dovecot.list
-RUN echo "deb https://repo.dovecot.org/ce-2.3.18/debian/bullseye bullseye main" > /etc/apt/sources.list.d/dovecot.list
 
-RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends install \
+# RUN curl https://repo.dovecot.org/DOVECOT-REPO-GPG | gpg --import && \
+#     gpg --export ED409DA1 > /etc/apt/trusted.gpg.d/dovecot.gpg
+
+# #RUN echo "deb https://repo.dovecot.org/ce-2.3-latest/debian/bullseye bullseye main" > /etc/apt/sources.list.d/dovecot.list
+# RUN echo "deb https://repo.dovecot.org/ce-$DOVECOT_BUILD_VERSION/debian/bullseye bullseye main" > /etc/apt/sources.list.d/dovecot.list
+
+
+
+
+RUN apt update && apt -y --no-install-recommends install \
         # System Apps
       cron \
       rsyslog \
       logrotate \
         # Dovecot
-      dovecot-core=2:2.3.18-4+debian11 \
-      dovecot-imapd=2:2.3.18-4+debian11 \
-      dovecot-lmtpd=2:2.3.18-4+debian11 \
-      dovecot-ldap=2:2.3.18-4+debian11 \
-      dovecot-sieve=2:2.3.18-4+debian11 \
-      dovecot-managesieved=2:2.3.18-4+debian11 \
+      # dovecot-core=2:2.3.18-4+debian11 \
+      # dovecot-imapd=2:2.3.18-4+debian11 \
+      # dovecot-lmtpd=2:2.3.18-4+debian11 \
+      # dovecot-ldap=2:2.3.18-4+debian11 \
+      # dovecot-sieve=2:2.3.18-4+debian11 \
+      # dovecot-managesieved=2:2.3.18-4+debian11 \
         # Postfix
       postfix=3.5.18-0+deb11u1 \
       postfix-ldap=3.5.18-0+deb11u1 \
@@ -77,8 +286,72 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends 
       opendkim=2.11.0~beta2-4 \
       opendkim-tools=2.11.0~beta2-4 \
         # SPF
-      postfix-policyd-spf-python=2.9.2-1+deb11u1
+      postfix-policyd-spf-python=2.9.2-1+deb11u1 \
+        # Dovecot
+    && if [ "0$(echo `dpkg --print-architecture`)" == "0amd64" ]; then \
+        curl https://repo.dovecot.org/DOVECOT-REPO-GPG | gpg --import && \
+          gpg --export ED409DA1 > /etc/apt/trusted.gpg.d/dovecot.gpg \
+        echo "deb https://repo.dovecot.org/ce-$DOVECOT_BUILD_VERSION/debian/bullseye bullseye main" > /etc/apt/sources.list.d/dovecot.list; \
+        apt update; \
+        apt -y --no-install-recommends install \
+          dovecot-core=$DOVECOT_BUILD_VERSION_DEBIAN_APT \
+          dovecot-imapd=$DOVECOT_BUILD_VERSION_DEBIAN_APT \
+          dovecot-lmtpd=$DOVECOT_BUILD_VERSION_DEBIAN_APT \
+          dovecot-ldap=$DOVECOT_BUILD_VERSION_DEBIAN_APT \
+          dovecot-sieve=$DOVECOT_BUILD_VERSION_DEBIAN_APT \
+          dovecot-managesieved=$DOVECOT_BUILD_VERSION_DEBIAN_APT; \
+      else \
+        # as this architecture doesn't exist in the apt repo, use compiled versions
+        adduser --system --group dovecot --no-create-home; \
+        cd tmp; \
+        curl --user "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+            "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/generic/dovecot/${DOVECOT_BUILD_VERSION}/dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb" -o "dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb"; \
+        curl --header "JOB-TOKEN: $CI_JOB_TOKEN" \
+            "https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/packages/generic/dovecot/${DOVECOT_BUILD_VERSION}/dovecot-pigeonhole_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb" -o "dovecot-pigeonhole_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb"; \
+        dpkg -i dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb; \
+        cp /usr/local/share/doc/dovecot/example-config/dovecot.conf /etc/dovecot/; \
+        dpkg -i dovecot-core_$DOVECOT_BUILD_VERSION-1_$(echo `dpkg --print-architecture`).deb; \
+      fi
 
+
+
+
+
+# COPY --from=compile-dovecot /tmp/build/dovecot/*.deb /tmp
+
+# COPY --from=compile-pigeonhole /tmp/build/pigeonhole/*.deb /tmp
+
+# RUN cd tmp && curl --user "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+#             "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/generic/dovecot/${DOVECOT_BUILD_VERSION}/dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb" -o "dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb" \
+#     && ls -la \
+#     && dpkg -i dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb
+
+# RUN cd tmp && curl --header "JOB-TOKEN: $CI_JOB_TOKEN" \
+#             "https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/packages/generic/dovecot/${DOVECOT_BUILD_VERSION}/dovecot-pigeonhole_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb" -o "dovecot-pigeonhole_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb" \
+#             && dpkg -i dovecot-core_$DOVECOT_BUILD_VERSION-1_$(echo `dpkg --print-architecture`).deb
+
+#RUN cd tmp && ls -la && dpkg -i dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb
+
+#RUN cp /usr/local/share/doc/dovecot/example-config/dovecot.conf /etc/dovecot/
+
+#RUN cd tmp && ls -la && dpkg -i dovecot-pigeonhole_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb
+
+    # && if [ "0$(echo `dpkg --print-architecture`)" == "0amd64" ]; then \
+    #     apt -y --no-install-recommends install \
+    #       # dovecot-core=2:2.3.18-4+debian11 \
+    #       # dovecot-imapd=2:2.3.18-4+debian11 \
+    #       # dovecot-lmtpd=2:2.3.18-4+debian11 \
+    #       # dovecot-ldap=2:2.3.18-4+debian11 \
+    #       dovecot-sieve=2:2.3.18-4+debian11 \
+    #       dovecot-managesieved=2:2.3.18-4+debian11; \
+    #   else \
+    #     echo dpkg -i /tmp/dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb; \
+    #     adduser --system --group dovecot --no-create-home; \
+    #   fi
+
+# RUN cd tmp && curl --header "PRIVATE-TOKEN: ${CI_JOB_TOKEN}" \
+#             "https://gitlab.com/api/v4/projects/33611657/packages/generic/dovecot/${DOVECOT_BUILD_VERSION}/dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb" -o "dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb" \
+#             && dpkg -i dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb
 
 # Cleanup, remove cron jobs not required
 RUN rm -f /etc/cron.d/e2scrub_all \
@@ -121,7 +394,7 @@ RUN chmod +x /docker-entrypoint.sh \
       # ensure postfix related scripts are executable
     && chmod +x /bin/postfix.sh \
       # check if needed
-    && mkdir -p /var/spool/postfix/private/dovecot \
+    && mkdir -p /var/spool/postfix/private/dovecot /var/lib/dovecot \
     && chown postfix:postfix /var/spool/postfix/private/dovecot \
     && chown vmail:vmail /var/lib/dovecot \
       # Spammassassin related Commands
@@ -222,7 +495,7 @@ ENTRYPOINT ["/docker-entrypoint.sh"]
 
 
 # testing software
-RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends install \
+RUN apt update && apt -y --no-install-recommends install \
       procps \
       vim \
       iputils-ping \

@@ -10,6 +10,7 @@ include:
 
 
 variables:
+  DOCKER_IMAGE_BUILD_TARGET_PLATFORMS: "linux/amd64,linux/arm64"
   DOCKER_IMAGE_PUBLISH_NAME: 'docker-mail'
   DOCKER_IMAGE_PUBLISH_REGISTRY: docker.io/nofusscomputing
   DOCKER_IMAGE_PUBLISH_URL: https://hub.docker.com/r/nofusscomputing/$DOCKER_IMAGE_PUBLISH_NAME

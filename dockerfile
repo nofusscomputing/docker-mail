@@ -15,6 +15,7 @@ ARG CI_JOB_TOKEN
 ARG CI_API_V4_URL
 ARG CI_PROJECT_ID
 ARG DOVECOT_BUILD_VERSION
+ARG PIGEONHOLE_BUILD_VERSION
 ARG VERSION_APT_DOVECOT
 
 LABEL \
@@ -95,8 +96,21 @@ RUN apt update && apt -y --no-install-recommends install \
           dovecot-ldap=$VERSION_APT_DOVECOT \
           dovecot-sieve=$VERSION_APT_DOVECOT \
           dovecot-managesieved=$VERSION_APT_DOVECOT; \
-
+      else \
+        # as this architecture doesn't exist in the apt repo, use compiled versions
+        adduser --system --group dovecot --no-create-home; \
+        cd tmp; \
+        curl --user "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+            "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/generic/dovecot/${DOVECOT_BUILD_VERSION}/dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb" -o "dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb"; \
+        curl --header "JOB-TOKEN: $CI_JOB_TOKEN" \
+            "https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/packages/generic/dovecot/${DOVECOT_BUILD_VERSION}/dovecot-pigeonhole_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb" -o "dovecot-pigeonhole_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb"; \
+        dpkg -i dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb; \
+        cp /usr/local/share/doc/dovecot/example-config/dovecot.conf /etc/dovecot/; \
+        dpkg -i dovecot-core_$DOVECOT_BUILD_VERSION-1_$(echo `dpkg --print-architecture`).deb; \
       fi
+
+
+
 
 
 # Cleanup, remove cron jobs not required

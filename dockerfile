@@ -70,10 +70,8 @@ RUN apt update && apt -y --no-install-recommends install \
       gpg-agent \ 
       apt-transport-https \
       ca-certificates \
-      supervisor
-
-
-RUN apt update && apt -y --no-install-recommends install \
+      supervisor \
+    && apt -y --no-install-recommends install \
         # System Apps
       cron \
       rsyslog \
@@ -136,14 +134,8 @@ RUN apt update && apt -y --no-install-recommends install \
         dpkg -i dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb; \
         cp /usr/local/share/doc/dovecot/example-config/dovecot.conf /etc/dovecot/; \
         dpkg -i dovecot-core_$DOVECOT_BUILD_VERSION-1_$(echo `dpkg --print-architecture`).deb; \
-      fi
-
-
-
-
-
-# Cleanup, remove cron jobs not required
-RUN rm -f /etc/cron.d/e2scrub_all \
+      fi \
+    && rm -f /etc/cron.d/e2scrub_all \
     && rm -f /etc/cron.daily/apt-compat \
     && rm -f /etc/cron.daily/dpkg \
     && rm -f /etc/cron.daily/logrotate

@@ -6,16 +6,7 @@ include:
     ref: development
     file:
       - .gitlab-ci_common.yaml
-      - type/docker-image.gitlab-ci.yaml
-
-# include:
-#   - project: nofusscomputing/projects/gitlab-ci
-#     ref: development
-#     file:
-#       - conventional_commits/.gitlab-ci.yml
-#       - validation/.gitlab-ci.yml
-#       - gitlab_release/.gitlab-ci.yml
-#       - git_push_mirror/.gitlab-ci.yml
+      - template/docker-image.gitlab-ci.yaml
 
 
 variables:

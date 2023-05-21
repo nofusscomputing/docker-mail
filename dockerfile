@@ -1,6 +1,21 @@
+ARG CI_JOB_TOKEN
+ARG CI_API_V4_URL
+ARG CI_PROJECT_ID
+ARG DOVECOT_BUILD_VERSION=2.3.18
+
+ARG PIGEONHOLE_BUILD_VERSION=0.5.20
+
+# 2:2.3.18-4+debian11
+ARG VERSION_APT_DOVECOT=2:$DOVECOT_BUILD_VERSION-4+debian11
 
 
 FROM --platform=$TARGETPLATFORM debian:11.7-slim as build
+
+ARG CI_JOB_TOKEN
+ARG CI_API_V4_URL
+ARG CI_PROJECT_ID
+ARG DOVECOT_BUILD_VERSION
+ARG VERSION_APT_DOVECOT
 
 LABEL \
   #org.opencontainers.image.created="" \ # set during build with $(date --rfc-3339=seconds) \
@@ -27,24 +42,12 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends 
       ca-certificates \
       supervisor
 
-RUN curl https://repo.dovecot.org/DOVECOT-REPO-GPG | gpg --import && \
-    gpg --export ED409DA1 > /etc/apt/trusted.gpg.d/dovecot.gpg
 
-#RUN echo "deb https://repo.dovecot.org/ce-2.3-latest/debian/bullseye bullseye main" > /etc/apt/sources.list.d/dovecot.list
-RUN echo "deb https://repo.dovecot.org/ce-2.3.18/debian/bullseye bullseye main" > /etc/apt/sources.list.d/dovecot.list
-
-RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends install \
+RUN apt update && apt -y --no-install-recommends install \
         # System Apps
       cron \
       rsyslog \
       logrotate \
-        # Dovecot
-      dovecot-core=2:2.3.18-4+debian11 \
-      dovecot-imapd=2:2.3.18-4+debian11 \
-      dovecot-lmtpd=2:2.3.18-4+debian11 \
-      dovecot-ldap=2:2.3.18-4+debian11 \
-      dovecot-sieve=2:2.3.18-4+debian11 \
-      dovecot-managesieved=2:2.3.18-4+debian11 \
         # Postfix
       postfix=3.5.18-0+deb11u1 \
       postfix-ldap=3.5.18-0+deb11u1 \
@@ -78,7 +81,22 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends 
       opendkim=2.11.0~beta2-4 \
       opendkim-tools=2.11.0~beta2-4 \
         # SPF
-      postfix-policyd-spf-python=2.9.2-1+deb11u1
+      postfix-policyd-spf-python=2.9.2-1+deb11u1 \
+        # Dovecot
+    && if [ "0$(echo `dpkg --print-architecture`)" == "0amd64" ]; then \
+        curl https://repo.dovecot.org/DOVECOT-REPO-GPG | gpg --import && \
+          gpg --export ED409DA1 > /etc/apt/trusted.gpg.d/dovecot.gpg \
+        echo "deb https://repo.dovecot.org/ce-$DOVECOT_BUILD_VERSION/debian/bullseye bullseye main" > /etc/apt/sources.list.d/dovecot.list; \
+        apt update; \
+        apt -y --no-install-recommends install \
+          dovecot-core=$VERSION_APT_DOVECOT \
+          dovecot-imapd=$VERSION_APT_DOVECOT \
+          dovecot-lmtpd=$VERSION_APT_DOVECOT \
+          dovecot-ldap=$VERSION_APT_DOVECOT \
+          dovecot-sieve=$VERSION_APT_DOVECOT \
+          dovecot-managesieved=$VERSION_APT_DOVECOT; \
+
+      fi
 
 
 # Cleanup, remove cron jobs not required
@@ -122,7 +140,7 @@ RUN chmod +x /docker-entrypoint.sh \
       # ensure postfix related scripts are executable
     && chmod +x /bin/postfix.sh \
       # check if needed
-    && mkdir -p /var/spool/postfix/private/dovecot \
+    && mkdir -p /var/spool/postfix/private/dovecot /var/lib/dovecot \
     && chown postfix:postfix /var/spool/postfix/private/dovecot \
     && chown vmail:vmail /var/lib/dovecot \
       # Spammassassin related Commands

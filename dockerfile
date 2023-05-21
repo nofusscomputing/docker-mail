@@ -1,5 +1,6 @@
-FROM debian:11.7-slim
 
+
+FROM --platform=$TARGETPLATFORM debian:11.7-slim as build
 
 LABEL \
   #org.opencontainers.image.created="" \ # set during build with $(date --rfc-3339=seconds) \

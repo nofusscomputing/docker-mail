@@ -1,22 +1,48 @@
+
+
 ARG CI_JOB_TOKEN
 ARG CI_API_V4_URL
 ARG CI_PROJECT_ID
-ARG DOVECOT_BUILD_VERSION=2.3.18
 
+ARG DOVECOT_BUILD_VERSION=2.3.18
 ARG PIGEONHOLE_BUILD_VERSION=0.5.20
 
+ARG VERSION_APT_AMAVISD=1:2.11.1-5
+ARG VERSION_APT_CLAMAV=0.103.5+dfsg-0+deb11u1
 # 2:2.3.18-4+debian11
 ARG VERSION_APT_DOVECOT=2:$DOVECOT_BUILD_VERSION-4+debian11
+ARG VERSION_APT_FETCHMAIL=6.4.16-4+deb11u1
+ARG VERSION_APT_FAM=2.7.0-17.3
+ARG VERSION_APT_LIBNET_DNS_PERL=1.29-1
+ARG VERSION_APT_LIBMAIL_TOOLS_PERL=2.21-1
+ARG VERSION_APT_OPENDKIM=2.11.0~beta2-4
+ARG VERSION_APT_POSTFIX=3.5.18-0+deb11u1
+ARG VERSION_APT_POSTFIX_POLICYD_SPF_PYTHON=2.9.2-1+deb11u1
+ARG VERSION_APT_SPAMASSASSIN=3.4.6-1
+
 
 
 FROM --platform=$TARGETPLATFORM debian:11.7-slim as build
 
+
 ARG CI_JOB_TOKEN
 ARG CI_API_V4_URL
 ARG CI_PROJECT_ID
+
 ARG DOVECOT_BUILD_VERSION
 ARG PIGEONHOLE_BUILD_VERSION
+
+ARG VERSION_APT_AMAVISD
+ARG VERSION_APT_CLAMAV
 ARG VERSION_APT_DOVECOT
+ARG VERSION_APT_FETCHMAIL
+ARG VERSION_APT_FAM
+ARG VERSION_APT_LIBNET_DNS_PERL
+ARG VERSION_APT_LIBMAIL_TOOLS_PERL
+ARG VERSION_APT_OPENDKIM
+ARG VERSION_APT_POSTFIX
+ARG VERSION_APT_POSTFIX_POLICYD_SPF_PYTHON
+ARG VERSION_APT_SPAMASSASSIN
 
 LABEL \
   #org.opencontainers.image.created="" \ # set during build with $(date --rfc-3339=seconds) \
@@ -50,23 +76,23 @@ RUN apt update && apt -y --no-install-recommends install \
       rsyslog \
       logrotate \
         # Postfix
-      postfix=3.5.18-0+deb11u1 \
-      postfix-ldap=3.5.18-0+deb11u1 \
+      postfix=$VERSION_APT_POSTFIX \
+      postfix-ldap=$VERSION_APT_POSTFIX \
       libsasl2-modules \
       sasl2-bin \
         # Amavis
-      amavisd-new=1:2.11.1-5 \
-      spamassassin=3.4.6-1 \
-      spamc=3.4.6-1 \
+      amavisd-new=$VERSION_APT_AMAVISD \
+      spamassassin=$VERSION_APT_SPAMASSASSIN \
+      spamc=$VERSION_APT_SPAMASSASSIN \
         # Amavis decoders
       arj bzip2 cabextract cpio file gzip nomarch pax unzip zip xzdec lrzip lzop rpm2cpio unrar-free p7zip-full lz4 \
-#      clamav=0.103.5+dfsg-0+deb11u1 \
-#      clamav-daemon=0.103.5+dfsg-0+deb11u1 \
-      libmailtools-perl=2.21-1 \
-      fam=2.7.0-17.3 \
-      libnet-dns-perl=1.29-1 \
+#      clamav=$VERSION_APT_CLAMAV \
+#      clamav-daemon=$VERSION_APT_CLAMAV \
+      libmailtools-perl=$VERSION_APT_LIBMAIL_TOOLS_PERL \
+      fam=$VERSION_APT_FAM \
+      libnet-dns-perl=$VERSION_APT_LIBNET_DNS_PERL \
         # Fetchmail
-      fetchmail=6.4.16-4+deb11u1 \
+      fetchmail=$VERSION_APT_FETCHMAIL \
         # Perl Modules for fetchmail.pl
         # DBI
       libdbix-easy-perl \
@@ -79,10 +105,10 @@ RUN apt update && apt -y --no-install-recommends install \
         # LockFile::Simple
       libio-lockedfile-perl \
         # DKIM
-      opendkim=2.11.0~beta2-4 \
-      opendkim-tools=2.11.0~beta2-4 \
+      opendkim=$VERSION_APT_OPENDKIM \
+      opendkim-tools=$VERSION_APT_OPENDKIM \
         # SPF
-      postfix-policyd-spf-python=2.9.2-1+deb11u1 \
+      postfix-policyd-spf-python=$VERSION_APT_POSTFIX_POLICYD_SPF_PYTHON \
         # Dovecot
     && if [ "0$(echo `dpkg --print-architecture`)" == "0amd64" ]; then \
         curl https://repo.dovecot.org/DOVECOT-REPO-GPG | gpg --import && \

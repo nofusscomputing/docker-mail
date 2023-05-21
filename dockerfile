@@ -7,6 +7,8 @@ ARG CI_PROJECT_ID
 ARG DOVECOT_BUILD_VERSION=2.3.18
 ARG PIGEONHOLE_BUILD_VERSION=0.5.20
 
+ARG DEBIAN_FRONTEND=noninteractive
+
 ARG VERSION_APT_AMAVISD=1:2.11.1-5
 ARG VERSION_APT_CLAMAV=0.103.5+dfsg-0+deb11u1
 # 2:2.3.18-4+debian11
@@ -31,6 +33,8 @@ ARG CI_PROJECT_ID
 
 ARG DOVECOT_BUILD_VERSION
 ARG PIGEONHOLE_BUILD_VERSION
+
+ARG DEBIAN_FRONTEND
 
 ARG VERSION_APT_AMAVISD
 ARG VERSION_APT_CLAMAV
@@ -59,9 +63,8 @@ LABEL \
   org.opencontainers.image.description="A Complete mailserver in a container"
 
 
-
 # Install dependencies
-RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends install \
+RUN apt update && apt -y --no-install-recommends install \
       curl \
       gpg \ 
       gpg-agent \ 
@@ -281,7 +284,7 @@ ENTRYPOINT ["/docker-entrypoint.sh"]
 
 
 # testing software
-RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends install \
+RUN apt update && apt -y --no-install-recommends install \
       procps \
       vim \
       iputils-ping \

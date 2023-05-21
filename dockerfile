@@ -48,6 +48,8 @@ ARG VERSION_APT_POSTFIX
 ARG VERSION_APT_POSTFIX_POLICYD_SPF_PYTHON
 ARG VERSION_APT_SPAMASSASSIN
 
+#COPY apt_proxy.conf /etc/apt/apt.conf.d/apt_proxy.conf
+
 LABEL \
   #org.opencontainers.image.created="" \ # set during build with $(date --rfc-3339=seconds) \
   org.opencontainers.image.authors="No Fuss Computing" \ 
@@ -109,11 +111,12 @@ RUN apt update && apt -y --no-install-recommends install \
       opendkim=$VERSION_APT_OPENDKIM \
       opendkim-tools=$VERSION_APT_OPENDKIM \
         # SPF
-      postfix-policyd-spf-python=$VERSION_APT_POSTFIX_POLICYD_SPF_PYTHON \
+      postfix-policyd-spf-python=$VERSION_APT_POSTFIX_POLICYD_SPF_PYTHON; \
         # Dovecot
-    && if [ "0$(echo `dpkg --print-architecture`)" == "0amd64" ]; then \
+    if [ "0$(echo `dpkg --print-architecture`)" = "0amd64" ]; then \
+        echo "[DEBUG] installing dovecot via APT"; \
         curl https://repo.dovecot.org/DOVECOT-REPO-GPG | gpg --import && \
-          gpg --export ED409DA1 > /etc/apt/trusted.gpg.d/dovecot.gpg \
+          gpg --export ED409DA1 > /etc/apt/trusted.gpg.d/dovecot.gpg; \
         echo "deb https://repo.dovecot.org/ce-$DOVECOT_BUILD_VERSION/debian/bullseye bullseye main" > /etc/apt/sources.list.d/dovecot.list; \
         apt update; \
         apt -y --no-install-recommends install \
@@ -124,6 +127,7 @@ RUN apt update && apt -y --no-install-recommends install \
           dovecot-sieve=$VERSION_APT_DOVECOT \
           dovecot-managesieved=$VERSION_APT_DOVECOT; \
       else \
+        echo "[DEBUG] installing dovecot via compiled binaries"; \
         # as this architecture doesn't exist in the apt repo, use compiled versions
         adduser --system --group dovecot --no-create-home; \
         cd tmp; \

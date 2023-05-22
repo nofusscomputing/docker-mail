@@ -1,6 +1,6 @@
 INHERIT: website-template/mkdocs.yml
 
-repo_name: Gitlab-CI
+repo_name: Docker-Mail
 repo_url: https://gitlab.com/nofusscomputing/projects/docker-mail
 edit_uri: '/-/ide/project/nofusscomputing/projects/docker-mail/edit/development/-/pages/'
 

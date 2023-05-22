@@ -1,6 +1,9 @@
 ---
 title: SPF configuration
 Description: How to configure SPF for No Fuss Computings docker mail server.
+date: 2022-02-17
+template: project.html
+about: https://gitlab.com/nofusscomputing/projects/docker-mail
 ---
 
 Sender Policy Framework (SPF) is defined in [RFC7208, Sender Policy Framework (SPF) for Authorizing Use of Domains in Email](https://datatracker.ietf.org/doc/html/rfc7208).
@@ -8,8 +11,10 @@ Sender Policy Framework (SPF) is defined in [RFC7208, Sender Policy Framework (S
 DNS SPF text record example:
 
 ``` text
+
 IN    TXT    "v=spf1 mx a ip4:192.168.0.100 ip6:2001:ef3:2911::/64"
                  " a:mail.example.org a:mail2.example.org -all"
+
 ```
 
 1. `v=spf1` Version attribute. only v1 available.

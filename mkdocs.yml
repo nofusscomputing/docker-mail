@@ -1,0 +1,57 @@
+INHERIT: website-template/mkdocs.yml
+
+repo_name: Gitlab-CI
+repo_url: https://gitlab.com/nofusscomputing/projects/docker-mail
+edit_uri: '/-/ide/project/nofusscomputing/projects/docker-mail/edit/development/-/pages/'
+
+nav:
+- Home: index.md
+
+- Articles: 
+
+  - articles/index.md
+
+- Projects: 
+
+  - projects/index.md
+
+  - Gitlab CI: 
+
+    - Build:
+
+      - projects/gitlab-ci/mkdocs-build.md
+
+    - Linting:
+
+      - projects/gitlab-ci/markdown_lint.md
+
+      - projects/gitlab-ci/yaml_lint.md
+
+    - Templates:
+      
+      - projects/gitlab-ci/templates/index.md
+    
+      - projects/gitlab-ci/templates/ansible_roles.md
+
+      - projects/gitlab-ci/templates/docker_container.md
+
+      - projects/gitlab-ci/templates/website.md
+
+    - Validation:
+
+      - projects/gitlab-ci/conventional_commits.md
+
+    - projects/gitlab-ci/index.md
+
+    - projects/gitlab-ci/git_mirror.md
+
+    - projects/gitlab-ci/gitlab_release.md
+
+    - projects/gitlab-ci/python.md
+
+- Operations: 
+
+  - operations/index.md
+
+- Contact Us: contact.md
+

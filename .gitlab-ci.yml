@@ -7,6 +7,7 @@ include:
     file:
       - .gitlab-ci_common.yaml
       - template/docker-image.gitlab-ci.yaml
+      - template/website.gitlab-ci.yaml
 
 
 variables:

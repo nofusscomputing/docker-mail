@@ -1,5 +1,54 @@
-FROM debian:11.7-slim
 
+
+ARG CI_JOB_TOKEN
+ARG CI_API_V4_URL
+ARG CI_PROJECT_ID
+
+ARG DOVECOT_BUILD_VERSION=2.3.18
+ARG PIGEONHOLE_BUILD_VERSION=0.5.20
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+ARG VERSION_APT_AMAVISD=1:2.11.1-5
+ARG VERSION_APT_CLAMAV=0.103.5+dfsg-0+deb11u1
+# 2:2.3.18-4+debian11
+ARG VERSION_APT_DOVECOT=2:$DOVECOT_BUILD_VERSION-4+debian11
+ARG VERSION_APT_FETCHMAIL=6.4.16-4+deb11u1
+ARG VERSION_APT_FAM=2.7.0-17.3
+ARG VERSION_APT_LIBNET_DNS_PERL=1.29-1
+ARG VERSION_APT_LIBMAIL_TOOLS_PERL=2.21-1
+ARG VERSION_APT_OPENDKIM=2.11.0~beta2-4
+ARG VERSION_APT_POSTFIX=3.5.18-0+deb11u1
+ARG VERSION_APT_POSTFIX_POLICYD_SPF_PYTHON=2.9.2-1+deb11u1
+ARG VERSION_APT_SPAMASSASSIN=3.4.6-1
+
+
+
+FROM --platform=$TARGETPLATFORM debian:11.7-slim as build
+
+
+ARG CI_JOB_TOKEN
+ARG CI_API_V4_URL
+ARG CI_PROJECT_ID
+
+ARG DOVECOT_BUILD_VERSION
+ARG PIGEONHOLE_BUILD_VERSION
+
+ARG DEBIAN_FRONTEND
+
+ARG VERSION_APT_AMAVISD
+ARG VERSION_APT_CLAMAV
+ARG VERSION_APT_DOVECOT
+ARG VERSION_APT_FETCHMAIL
+ARG VERSION_APT_FAM
+ARG VERSION_APT_LIBNET_DNS_PERL
+ARG VERSION_APT_LIBMAIL_TOOLS_PERL
+ARG VERSION_APT_OPENDKIM
+ARG VERSION_APT_POSTFIX
+ARG VERSION_APT_POSTFIX_POLICYD_SPF_PYTHON
+ARG VERSION_APT_SPAMASSASSIN
+
+#COPY apt_proxy.conf /etc/apt/apt.conf.d/apt_proxy.conf
 
 LABEL \
   #org.opencontainers.image.created="" \ # set during build with $(date --rfc-3339=seconds) \
@@ -16,52 +65,37 @@ LABEL \
   org.opencontainers.image.description="A Complete mailserver in a container"
 
 
-
 # Install dependencies
-RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends install \
+RUN apt update && apt -y --no-install-recommends install \
       curl \
       gpg \ 
       gpg-agent \ 
       apt-transport-https \
       ca-certificates \
-      supervisor
-
-RUN curl https://repo.dovecot.org/DOVECOT-REPO-GPG | gpg --import && \
-    gpg --export ED409DA1 > /etc/apt/trusted.gpg.d/dovecot.gpg
-
-#RUN echo "deb https://repo.dovecot.org/ce-2.3-latest/debian/bullseye bullseye main" > /etc/apt/sources.list.d/dovecot.list
-RUN echo "deb https://repo.dovecot.org/ce-2.3.18/debian/bullseye bullseye main" > /etc/apt/sources.list.d/dovecot.list
-
-RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends install \
+      supervisor \
+    && apt -y --no-install-recommends install \
         # System Apps
       cron \
       rsyslog \
       logrotate \
-        # Dovecot
-      dovecot-core=2:2.3.18-4+debian11 \
-      dovecot-imapd=2:2.3.18-4+debian11 \
-      dovecot-lmtpd=2:2.3.18-4+debian11 \
-      dovecot-ldap=2:2.3.18-4+debian11 \
-      dovecot-sieve=2:2.3.18-4+debian11 \
-      dovecot-managesieved=2:2.3.18-4+debian11 \
         # Postfix
-      postfix=3.5.18-0+deb11u1 \
-      postfix-ldap=3.5.18-0+deb11u1 \
+      postfix=$VERSION_APT_POSTFIX \
+      postfix-ldap=$VERSION_APT_POSTFIX \
       libsasl2-modules \
       sasl2-bin \
         # Amavis
-      amavisd-new=1:2.11.1-5 \
-      spamassassin=3.4.6-1 \
-      spamc=3.4.6-1 \
+      amavisd-new=$VERSION_APT_AMAVISD \
+      spamassassin=$VERSION_APT_SPAMASSASSIN \
+      spamc=$VERSION_APT_SPAMASSASSIN \
         # Amavis decoders
       arj bzip2 cabextract cpio file gzip nomarch pax unzip zip xzdec lrzip lzop rpm2cpio unrar-free p7zip-full lz4 \
-#      clamav=0.103.5+dfsg-0+deb11u1 \
-#      clamav-daemon=0.103.5+dfsg-0+deb11u1 \
-      libmailtools-perl=2.21-1 \
-      fam=2.7.0-17.3 \
-      libnet-dns-perl=1.29-1 \
+#      clamav=$VERSION_APT_CLAMAV \
+#      clamav-daemon=$VERSION_APT_CLAMAV \
+      libmailtools-perl=$VERSION_APT_LIBMAIL_TOOLS_PERL \
+      fam=$VERSION_APT_FAM \
+      libnet-dns-perl=$VERSION_APT_LIBNET_DNS_PERL \
         # Fetchmail
-      fetchmail=6.4.16-4+deb11u1 \
+      fetchmail=$VERSION_APT_FETCHMAIL \
         # Perl Modules for fetchmail.pl
         # DBI
       libdbix-easy-perl \
@@ -74,14 +108,38 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends 
         # LockFile::Simple
       libio-lockedfile-perl \
         # DKIM
-      opendkim=2.11.0~beta2-4 \
-      opendkim-tools=2.11.0~beta2-4 \
+      opendkim=$VERSION_APT_OPENDKIM \
+      opendkim-tools=$VERSION_APT_OPENDKIM \
         # SPF
-      postfix-policyd-spf-python=2.9.2-1+deb11u1
-
-
-# Cleanup, remove cron jobs not required
-RUN rm -f /etc/cron.d/e2scrub_all \
+      postfix-policyd-spf-python=$VERSION_APT_POSTFIX_POLICYD_SPF_PYTHON; \
+        # Dovecot
+    if [ "0$(echo `dpkg --print-architecture`)" = "0amd64" ]; then \
+        echo "[DEBUG] installing dovecot via APT"; \
+        curl https://repo.dovecot.org/DOVECOT-REPO-GPG | gpg --import && \
+          gpg --export ED409DA1 > /etc/apt/trusted.gpg.d/dovecot.gpg; \
+        echo "deb https://repo.dovecot.org/ce-$DOVECOT_BUILD_VERSION/debian/bullseye bullseye main" > /etc/apt/sources.list.d/dovecot.list; \
+        apt update; \
+        apt -y --no-install-recommends install \
+          dovecot-core=$VERSION_APT_DOVECOT \
+          dovecot-imapd=$VERSION_APT_DOVECOT \
+          dovecot-lmtpd=$VERSION_APT_DOVECOT \
+          dovecot-ldap=$VERSION_APT_DOVECOT \
+          dovecot-sieve=$VERSION_APT_DOVECOT \
+          dovecot-managesieved=$VERSION_APT_DOVECOT; \
+      else \
+        echo "[DEBUG] installing dovecot via compiled binaries"; \
+        # as this architecture doesn't exist in the apt repo, use compiled versions
+        adduser --system --group dovecot --no-create-home; \
+        cd tmp; \
+        curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+            "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/generic/dovecot/${DOVECOT_BUILD_VERSION}/dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb" -o "dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb"; \
+        curl --header "JOB-TOKEN: $CI_JOB_TOKEN" \
+            "https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/packages/generic/dovecot/${DOVECOT_BUILD_VERSION}/dovecot-pigeonhole_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb" -o "dovecot-pigeonhole_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb"; \
+        dpkg -i dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb; \
+        cp /usr/local/share/doc/dovecot/example-config/dovecot.conf /etc/dovecot/; \
+        dpkg -i dovecot-pigeonhole_$DOVECOT_BUILD_VERSION-1_$(echo `dpkg --print-architecture`).deb; \
+      fi \
+    && rm -f /etc/cron.d/e2scrub_all \
     && rm -f /etc/cron.daily/apt-compat \
     && rm -f /etc/cron.daily/dpkg \
     && rm -f /etc/cron.daily/logrotate
@@ -121,7 +179,7 @@ RUN chmod +x /docker-entrypoint.sh \
       # ensure postfix related scripts are executable
     && chmod +x /bin/postfix.sh \
       # check if needed
-    && mkdir -p /var/spool/postfix/private/dovecot \
+    && mkdir -p /var/spool/postfix/private/dovecot /var/lib/dovecot \
     && chown postfix:postfix /var/spool/postfix/private/dovecot \
     && chown vmail:vmail /var/lib/dovecot \
       # Spammassassin related Commands
@@ -222,7 +280,7 @@ ENTRYPOINT ["/docker-entrypoint.sh"]
 
 
 # testing software
-RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y --no-install-recommends install \
+RUN apt update && apt -y --no-install-recommends install \
       procps \
       vim \
       iputils-ping \

@@ -6,19 +6,12 @@ include:
     ref: development
     file:
       - .gitlab-ci_common.yaml
-      - type/docker-image.gitlab-ci.yaml
-
-# include:
-#   - project: nofusscomputing/projects/gitlab-ci
-#     ref: development
-#     file:
-#       - conventional_commits/.gitlab-ci.yml
-#       - validation/.gitlab-ci.yml
-#       - gitlab_release/.gitlab-ci.yml
-#       - git_push_mirror/.gitlab-ci.yml
+      - template/docker-image.gitlab-ci.yaml
+      - template/website.gitlab-ci.yaml
 
 
 variables:
+  DOCKER_IMAGE_BUILD_TARGET_PLATFORMS: "linux/amd64,linux/arm64"
   DOCKER_IMAGE_PUBLISH_NAME: 'docker-mail'
   DOCKER_IMAGE_PUBLISH_REGISTRY: docker.io/nofusscomputing
   DOCKER_IMAGE_PUBLISH_URL: https://hub.docker.com/r/nofusscomputing/$DOCKER_IMAGE_PUBLISH_NAME
@@ -26,129 +19,49 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
   GIT_SYNC_URL: "https://$GITHUB_USERNAME_ROBOT:$GITHUB_TOKEN_ROBOT@github.com/NoFussComputing/docker-mail.git"
   MY_PROJECT_ID: "33611657"
+  PAGES_ENVIRONMENT_PATH: projects/docker-mail/
 
 
-# Markdown Linting:
-#   extends:
-#     - .Lint_Markdown
 
-# Docker Container:
-#   stage: build
-#   image: docker:latest
-#   services:
-#     - docker:19.03.12-dind
-#   before_script:
-#     - docker info
-# #    - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD 
-#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-#     - apk update
-#     - apk add --update --no-cache python3 git && ln -sf python3 /usr/bin/python
-#     - python3 -m ensurepip
-#     - pip3 install -r gitlab-ci/gitlab_release/requirements.txt
-#     - pip3 install gitlab-ci/gitlab_release/python-module/cz_nfc/.
-#   script:  |
-#     docker build . \
-#       --label org.opencontainers.image.created="$(date '+%Y-%m-%d %H:%M:%S%:z')" \
-#       --label org.opencontainers.image.documentation="$CI_PROJECT_URL/pages" \
-#       --label org.opencontainers.image.source="$CI_PROJECT_URL" \
-#       --label org.opencontainers.image.url="$CI_PROJECT_URL/-/releases/v$(cz -n cz_nfc version --project)" \
-#       --label org.opencontainers.image.version="$(cz -n cz_nfc version --project)" \
-#       --label org.opencontainers.image.revision="$CI_COMMIT_SHA" \
-#     --no-cache \
-#     --tag $CI_REGISTRY_IMAGE/docker-mail:$CI_COMMIT_SHA;
-
-#     docker image inspect $CI_REGISTRY_IMAGE/docker-mail:$CI_COMMIT_SHA;
-
-#     docker push $CI_REGISTRY_IMAGE/docker-mail:$CI_COMMIT_SHA;
-
-# #  after_script:
-# #    - docker push $CI_REGISTRY_IMAGE/docker-mail:$CI_COMMIT_SHA
-#   allow_failure: true
-#   rules:
-#     - if: $CI_COMMIT_TAG
-#       when: on_success
-#     - if: '$CI_COMMIT_BRANCH == "development" && $CI_COMMIT_TITLE =~ /Merge branch.*/'
-#       when: on_success
-#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-#       when: never
-#     - if: '$CI_COMMIT_BRANCH != "master"'
-#       when: manual
-#     - when: never
+Compile Dovecot:
+  extends: .build_docker_container
+  variables:
+    DOCKER_DOCKERFILE: dockerfile-compile
+    DOCKER_IMAGE_BUILD_TARGET_PLATFORMS: "linux/arm64"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: '$CI_COMMIT_BRANCH != "master"'
+      when: manual
+      allow_failure: true
+    - when: never
 
 
-# Gitlab Release:
-#     extends:
-#         - .gitlab_release
+Website:Stage.Publish:
+  stage: publish
+  trigger:
+    project: nofusscomputing/infrastructure/website
+    branch: development
+  needs: [ Website.Build ]
+  rules:
+    - if: '$CI_PIPELINE_SOURCE != "merge_request_event"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_BRANCH == "development"'
+      when: on_success
+    - when: never
 
 
-# Docker Hub:
-#   stage: publish
-#   image: docker:latest
-#   services:
-#     - docker:19.03.12-dind
-#   before_script:
-#     - export
-#     - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-#     - docker pull $CI_REGISTRY_IMAGE/docker-mail:$CI_COMMIT_SHA
-#     - docker logout $CI_REGISTRY
-#   script:
-# #    - Release_TAG=$(cat $CI_PROJECT_DIR/dist/version)
-#     - docker login docker.io -u $NFC_DOCKERHUB_USERNAME -p $NFC_DOCKERHUB_TOKEN
-# #    - if [ "m$(echo $CI_BUILD_REF_NAME | grep rc)" == "m$CI_BUILD_REF_NAME" ]; then Branch_TAG=dev; else Branch_TAG=stable; fi
-#     - echo Branch tag is $Branch_TAG
-#     - docker image ls
-#     - |
-#       if [ "0$CI_COMMIT_BRANCH" == "0development" ]; then
-
-#         DH_LATEST_TAG=dev
-
-#       elif [ "0$CI_COMMIT_TAG" != "0" ] ; then
-
-#         if [ "0$CI_COMMIT_TAG" == *"rc"* ]; then
-        
-#           DH_LATEST_TAG=dev
-
-#         else
-
-#           DH_LATEST_TAG=latest
-
-#         fi
-
-#         docker image tag $CI_REGISTRY_IMAGE/docker-mail:$CI_COMMIT_SHA nofusscomputing/docker-mail:$CI_COMMIT_TAG;
-
-#         docker image ls;
-      
-#         docker push nofusscomputing/docker-mail:$CI_COMMIT_TAG;
-
-#       fi
-
-#       if [ "0$DH_LATEST_TAG" != "0" ]; then
-
-#         docker image tag $CI_REGISTRY_IMAGE/docker-mail:$CI_COMMIT_SHA nofusscomputing/docker-mail:$DH_LATEST_TAG;
-
-#         docker image ls;
-
-#         docker push nofusscomputing/docker-mail:$DH_LATEST_TAG;
-
-#       fi  
-#   needs: [ "Docker Container" ]
-#   environment:
-#     name: DockerHub
-#     url: https://hub.docker.com/r/nofusscomputing/docker-mail
-#   rules:
-#     - if: $CI_COMMIT_TAG
-#       when: on_success
-#     - if: '$CI_COMMIT_BRANCH == "development" && $CI_COMMIT_TITLE =~ /Merge branch.*/'
-#       when: on_success
-#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-#       when: never
-#     - if: '$CI_COMMIT_BRANCH'
-#       when: never
-#     - when: never
-
-
-# Github (Push --mirror):
-#     variables:
-#         GIT_SYNC_URL: "https://$GITHUB_USERNAME_ROBOT:$GITHUB_TOKEN_ROBOT@github.com/NoFussComputing/docker-mail.git"
-#     extends:
-#         - .git_push_mirror
+Website:Deploy.Publish:
+  stage: publish
+  trigger:
+    project: nofusscomputing/infrastructure/website
+    branch: development
+  needs: [ Website.Build ]
+  rules:
+    - if: '$CI_PIPELINE_SOURCE != "merge_request_event"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_BRANCH == "master"'
+      when: on_success
+    - when: never

@@ -1,0 +1,135 @@
+
+ARG CI_JOB_TOKEN
+ARG CI_API_V4_URL
+ARG CI_PROJECT_ID
+
+ARG DOVECOT_BUILD_VERSION=2.3.18
+ARG PIGEONHOLE_BUILD_VERSION=0.5.20
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+
+
+FROM --platform=$TARGETPLATFORM debian:11.7-slim as compile-dovecot
+# ref: https://doc.dovecot.org/installation_guide/dovecot_community_repositories/compiling_source/
+
+
+ARG CI_JOB_TOKEN
+ARG CI_API_V4_URL
+ARG CI_PROJECT_ID
+
+ARG DOVECOT_BUILD_VERSION
+ARG PIGEONHOLE_BUILD_VERSION
+
+ARG DEBIAN_FRONTEND
+
+
+RUN export && apt update \
+  && apt -y install --reinstall --fix-missing \
+      wget \
+      autoconf \
+      automake \
+      libtool \
+      pkg-config \
+      gettext \
+      pandoc \
+      make \
+      git \
+      ca-certificates \
+      libssl-dev \
+      bison \
+      flex \
+      curl \
+      checkinstall \
+      zlib1g-dev 
+
+
+RUN mkdir -p /tmp/build \
+    && cd /tmp/build \
+    && git clone --depth=1 -b release-${DOVECOT_BUILD_VERSION} https://github.com/dovecot/core.git dovecot
+
+
+RUN cd /tmp/build/dovecot \
+    && ./autogen.sh \
+    && ./configure --enable-maintainer-mode --sysconfdir=/etc \
+    # && make \
+    && ls -la
+
+RUN /bin/mkdir -p '/usr/local/lib/dovecot' \
+                  '/usr/local/share/dovecot/stopwords' \
+                  '/usr/local/libexec/dovecot' \
+                  '/usr/local/lib/dovecot/auth' \
+                  '/usr/local/lib/dovecot/old-stats' \
+                  '/usr/local/lib/dovecot/doveadm' \
+                  '/usr/local/share/doc/dovecot/wiki' \
+                  '/usr/local/share/doc/dovecot/example-config/conf.d'
+
+
+RUN cd /tmp/build/dovecot && checkinstall --pkgname=dovecot-core --pkgversion=${DOVECOT_BUILD_VERSION} --pkgarch=$(echo `dpkg --print-architecture`) -D -y \
+    && ls -la
+
+
+RUN cd /tmp/build/dovecot && curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --verbose \
+     --upload-file dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb \
+     "https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/packages/generic/dovecot/${DOVECOT_BUILD_VERSION}/dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb"
+
+
+
+
+
+FROM --platform=$TARGETPLATFORM debian:11.7-slim as compile-pigeonhole
+# ref: https://doc.dovecot.org/installation_guide/dovecot_community_repositories/compiling_source/
+
+
+ARG CI_JOB_TOKEN
+ARG CI_API_V4_URL
+ARG CI_PROJECT_ID
+
+ARG DOVECOT_BUILD_VERSION
+ARG PIGEONHOLE_BUILD_VERSION
+
+ARG DEBIAN_FRONTEND
+
+
+RUN export && apt update \
+  && apt -y install --reinstall --fix-missing \
+      wget \
+      autoconf \
+      automake \
+      libtool \
+      pkg-config \
+      gettext \
+      pandoc \
+      make \
+      git \
+      ca-certificates \
+      libssl-dev \
+      bison \
+      flex \
+      curl \
+      checkinstall \
+      zlib1g-dev 
+
+
+
+RUN cd tmp && curl --header "JOB-TOKEN: $CI_JOB_TOKEN" \
+            "https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/packages/generic/dovecot/${DOVECOT_BUILD_VERSION}/dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb" -o "dovecot-core_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb" \
+            && dpkg -i dovecot-core_$DOVECOT_BUILD_VERSION-1_$(echo `dpkg --print-architecture`).deb
+
+RUN mkdir -p /tmp/build \
+  && cd /tmp/build/ && git clone -b $PIGEONHOLE_BUILD_VERSION --depth=1 https://github.com/dovecot/pigeonhole.git pigeonhole \
+  && cd pigeonhole \
+  && ./autogen.sh \
+  && ./configure --sysconfdir=/etc --with-dovecot-install-dirs \
+  # && make \
+  && mkdir -p '/usr/local/lib/dovecot/sieve' \
+              '/usr/local/lib/dovecot/settings' \
+              '/usr/local/share/doc/dovecot/example-config'  \
+              '/usr/local/share/doc/dovecot/sieve/extensions'
+
+RUN cd /tmp/build/pigeonhole && checkinstall --pkgname=dovecot-pigeonhole --pkgversion=${DOVECOT_BUILD_VERSION} --pkgarch=$(echo `dpkg --print-architecture`) -D -y
+
+RUN cd /tmp/build/pigeonhole && curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --verbose \
+     --upload-file dovecot-pigeonhole_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb \
+     "https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/packages/generic/dovecot/${DOVECOT_BUILD_VERSION}/dovecot-pigeonhole_${DOVECOT_BUILD_VERSION}-1_$(echo `dpkg --print-architecture`).deb"
+

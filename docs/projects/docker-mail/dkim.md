@@ -1,6 +1,9 @@
 ---
 title: Amavis DKIM Signing configuration
 Description: How to configure DKIM for No Fuss Computings mail server.
+date: 2022-02-16
+template: project.html
+about: https://gitlab.com/nofusscomputing/projects/docker-mail
 ---
 
 To utilise DKIM message signing for outbound mail (leaving the server), you will need to configure dkim to use your certificates.
@@ -19,6 +22,7 @@ $ amavisd-new genrsa /certs/amavis/dkim/example.org.dkim.pem 2048 # (1)!
 $ chmod g+r /certs/amavis/dkim/example.org.dkim.pem # (2)!
 
 $ chgrp amavis /certs/amavis/dkim/example.org.dkim.pem # (2)!
+
 ```
 
 1. create your DKIM Key
@@ -51,6 +55,7 @@ To configure amavis, you will be required to create a confiuguration file with y
 
 
 ``` conf title="/etc/amavis/conf.d/99-dkim-keys"
+
 dkim_key(
     'example.org', # (1)!
     'dkim', # (2)!
@@ -97,6 +102,7 @@ Once configuration is complete issue command `supervisorctl restart amavis` to l
 Once you have configured Amavis and created your DKIM keys, you will need to configure DNS. For this you will require the DKIM Key information. Since we are using Amavis, issue command `amavisd-new showkeys` to display your keys and the required dns config.
 
 ``` bash title="DNS Configuration"
+
 $ amavisd-new showkeys
 ; key#1 4096 bits, i=dkim, d=example.org, /certs/amavis/dkim/example.org.dkim.pem
 dkim._domainkey.example.org.    3600 TXT (

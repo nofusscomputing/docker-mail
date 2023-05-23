@@ -19,6 +19,7 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
   GIT_SYNC_URL: "https://$GITHUB_USERNAME_ROBOT:$GITHUB_TOKEN_ROBOT@github.com/NoFussComputing/docker-mail.git"
   MY_PROJECT_ID: "33611657"
+  PAGES_ENVIRONMENT_PATH: projects/docker-mail/
 
 
 
@@ -35,4 +36,32 @@ Compile Dovecot:
     - if: '$CI_COMMIT_BRANCH != "master"'
       when: manual
       allow_failure: true
+    - when: never
+
+
+Website:Stage.Publish:
+  stage: publish
+  trigger:
+    project: nofusscomputing/infrastructure/website
+    branch: development
+  needs: [ Website.Build ]
+  rules:
+    - if: '$CI_PIPELINE_SOURCE != "merge_request_event"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_BRANCH == "development"'
+      when: on_success
+    - when: never
+
+
+Website:Deploy.Publish:
+  stage: publish
+  trigger:
+    project: nofusscomputing/infrastructure/website
+    branch: development
+  needs: [ Website.Build ]
+  rules:
+    - if: '$CI_PIPELINE_SOURCE != "merge_request_event"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_BRANCH == "master"'
+      when: on_success
     - when: never

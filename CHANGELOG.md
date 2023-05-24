@@ -1,3 +1,45 @@
+## 0.1.0rc3 (2023-05-24)
+
+### Bug Fixes
+
+- **docs**: [e872534a](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/e872534aec12c0905a7713532f36f6fde63b4730) - use docs path instead of pages [ [!10](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/10) [!26](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/26) ]
+- **mkdocs**: [9acc37ec](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/9acc37ec4f2286c06debbbfda0acb8a3bf04c998) - use correct edit path [ [!10](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/10) ]
+- **website**: [c2902063](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/c290206392836642af5a3b6ca1dad67abe799b42) - correct repo name [ [!10](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/10) ]
+- **docs**: [bfcb3469](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/bfcb346924b12411102fc58bec13aa7e0820a0ce) - add base files for navigation [ [!10](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/10) ]
+- **ci**: [235aa8d7](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/235aa8d7ccd19dcee44f56a27367113f2e4f5354) - must have index.md file for linting to start [ [!10](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/10) ]
+- **build**: [88689c87](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/88689c87ac84ba493652cbf22da934d5873c55b3) - ensure dovecot downloaded and installed [ [!10](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/10) ]
+- **build**: [9a0df52c](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/9a0df52cd9d2d0f8574801ca73e6b0a525531b30) - fix build logic [ [!10](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/10) ]
+- **publish**: [c30efc8b](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/c30efc8bd64f7d7702b71e3fed2acab915821f2c) - must specify docker publish details [ [!3](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/3) ]
+- [29c6d6f7](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/29c6d6f7304c6bca751d3904e37d2561ac9f01a1) - lock debian base image [ [!3](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/3) ]
+- **versions**: [840e2ad5](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/840e2ad5aead5effdb925dd640ce483782a11ca5) - update postfix [ [!3](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/3) ]
+- **repo**: [d6b2b5b4](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/d6b2b5b40ef2643005078807da7ca7dcce82505a) - lock dovecot repo to specified version [ [!3](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/3) ]
+
+### Code Refactor
+
+- **image**: [4c106025](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/4c106025d545d89cadef0bf019a86cbaf7dca00a) - reduce the number of layers [ [!10](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/10) ]
+- **dockerfile**: [1c6b3a36](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/1c6b3a3617cfcd0a781391c96d0265c2fb7eef3b) - use global var [ [!10](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/10) ]
+- **dockerfile**: [88bfc649](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/88bfc64940e7a2b7073c8ebe644afd06a4e2149c) - use args for apt software versions [ [!10](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/10) ]
+- **ci**: [300961aa](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/300961aaff303b1b4a6ea2f70b9c13fbf1831260) - update template path [ [!10](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/10) ]
+
+### Continious Integration
+
+- **gitlab**: [aa461590](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/aa461590a83065e81b3743e791975ebcad916874) - update to latest HEAD [ [!10](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/10) ]
+- **compile**: [808ca861](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/808ca861edc1080844cbfd61bd962020146cdcf0) - add dovecot compile job [ [!10](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/10) ]
+- **gitlab-ci**: [e2e704c5](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/e2e704c54588c6bddccfcd38c18f21a5bc863c78) - use dev branch and type docker container [ [!3](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/3) ]
+
+### Documentaton / Guides
+
+- **build**: [f22931e6](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/f22931e6f079657acc94f21e7e2d5c61410a150b) - added navigation for project [ [!10](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/10) ]
+
+### Features
+
+- **ci**: [80ccaaa6](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/80ccaaa6e7d875283770baff1b090b8807a65947) - trigger downstream website to build [ [!10](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/10) [!27](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/27) ]
+- **docs**: [6409627d](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/6409627daeb7ce6a131bd7205409c3f8c07f9986) - add website static page building [ [!10](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/10) [!25](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/25) ]
+- **build**: [7261769a](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/7261769a95a985b95a5f16142c0e461d0984174e) - dockerfile for compiling dovecot [ [!10](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/10) ]
+- **arm64**: [a866bd82](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/a866bd82b82ae6ec45a1121bed1a6dfd9f59f114) - build arm64 image using compiled bins [ [!10](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/10) ]
+- **amd64**: [676546f7](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/676546f71c13dcc8ddf7db7128b003b8f2416721) - use dovecot apt repo to install [ [!10](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/10) ]
+- **build**: [2b497fd2](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/2b497fd2cf7678e17f544ad38187486cc4efeaf3) - specify architecture [ [!10](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/10) ]
+
 ## v0.1.0rc2 (2022-02-19)
 
 ### Bug Fixes

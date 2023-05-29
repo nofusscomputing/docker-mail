@@ -6,8 +6,7 @@ include:
     ref: development
     file:
       - .gitlab-ci_common.yaml
-      - template/docker-image.gitlab-ci.yaml
-      - template/website.gitlab-ci.yaml
+      - template/automagic.gitlab-ci.yaml
 
 
 variables:
@@ -36,32 +35,4 @@ Compile Dovecot:
     - if: '$CI_COMMIT_BRANCH != "master"'
       when: manual
       allow_failure: true
-    - when: never
-
-
-Website:Stage.Publish:
-  stage: publish
-  trigger:
-    project: nofusscomputing/infrastructure/website
-    branch: development
-  needs: [ Website.Build ]
-  rules:
-    - if: '$CI_PIPELINE_SOURCE != "merge_request_event"'
-      when: never
-    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_BRANCH == "development"'
-      when: on_success
-    - when: never
-
-
-Website:Deploy.Publish:
-  stage: publish
-  trigger:
-    project: nofusscomputing/infrastructure/website
-    branch: development
-  needs: [ Website.Build ]
-  rules:
-    - if: '$CI_PIPELINE_SOURCE != "merge_request_event"'
-      when: never
-    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_BRANCH == "master"'
-      when: on_success
     - when: never

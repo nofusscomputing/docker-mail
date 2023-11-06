@@ -1,0 +1,13 @@
+/var/log/postfix.log
+{
+    rotate 30
+    daily
+    missingok
+    notifempty
+    compress
+    delaycompress
+    create 0644 postfix postfix
+        postrotate
+            supervisorctl restart postfix
+        endscript
+}

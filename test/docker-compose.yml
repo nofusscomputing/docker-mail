@@ -1,0 +1,192 @@
+#
+# upgrade: docker-compose run --rm sentry upgrade
+#
+
+version: '2.2'
+services:
+
+  openldap:
+    image: osixia/openldap:1.5.0
+    container_name: openldap
+    domainname: "example.org" # important: same as hostname
+    hostname: "example.org"
+    restart: unless-stopped
+    cpus: 2
+    mem_limit: 100MB
+    environment:
+        LDAP_LOG_LEVEL: "256"
+        LDAP_ORGANISATION: "Example"
+        LDAP_DOMAIN: "example.org"
+        LDAP_BASE_DN: ""
+        LDAP_ADMIN_PASSWORD: "admin"
+        LDAP_CONFIG_PASSWORD: "config"
+        LDAP_READONLY_USER: "false"
+        LDAP_READONLY_USER_USERNAME: "readonly"
+        LDAP_READONLY_USER_PASSWORD: "readonly"
+        LDAP_RFC2307BIS_SCHEMA: "false"
+        LDAP_BACKEND: "mdb"
+        LDAP_TLS: "true"
+        LDAP_TLS_CRT_FILENAME: "ldap.crt"
+        LDAP_TLS_KEY_FILENAME: "ldap.key"
+        LDAP_TLS_CA_CRT_FILENAME: "ca.crt"
+        LDAP_TLS_ENFORCE: "false"
+        LDAP_TLS_CIPHER_SUITE: "SECURE256:-VERS-SSL3.0"
+        LDAP_TLS_PROTOCOL_MIN: "3.1"
+        LDAP_TLS_VERIFY_CLIENT: "demand"
+        LDAP_REPLICATION: "false"
+        #LDAP_REPLICATION_CONFIG_SYNCPROV: "binddn="cn=admin,cn=config" bindmethod=simple credentials=$LDAP_CONFIG_PASSWORD searchbase="cn=config" type=refreshAndPersist retry="60 +" timeout=1 starttls=critical"
+        #LDAP_REPLICATION_DB_SYNCPROV: "binddn="cn=admin,$LDAP_BASE_DN" bindmethod=simple credentials=$LDAP_ADMIN_PASSWORD searchbase="$LDAP_BASE_DN" type=refreshAndPersist interval=00:00:00:10 retry="60 +" timeout=1 starttls=critical"
+        #docker-compose.ymlLDAP_REPLICATION_HOSTS: "#PYTHON2BASH:['ldap://ldap.example.org','ldap://ldap2.example.org']"
+        KEEP_EXISTING_CONFIG: "false"
+        LDAP_REMOVE_CONFIG_AFTER_SETUP: "false"
+        LDAP_SSL_HELPER_PREFIX: "ldap"
+    tty: true
+    stdin_open: true
+    volumes:
+      - ldap_data:/var/lib/ldap
+      - ldap_config:/etc/ldap/slapd.d
+      - ldap_certs:/container/service/slapd/assets/certs/
+      - ./ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom/
+    expose:
+      - 389
+      - 636
+    networks:
+      - default
+
+  phpldapadmin:
+    image: osixia/phpldapadmin:latest
+    container_name: phpldapadmin
+    depends_on:
+      - openldap
+    restart: unless-stopped
+    cpus: 2
+    mem_limit: 100MB
+    environment:
+      PHPLDAPADMIN_LDAP_HOSTS: openldap
+      PHPLDAPADMIN_HTTPS: "false"
+    ports:
+      - "127.0.0.1:8080:80"
+    networks:
+      - default
+
+
+  mail: 
+    image: test/mail:latest
+    container_name: mail
+    depends_on:
+      - openldap
+    links:
+      - mysql
+    build:
+      context: .
+      dockerfile: dockerfile
+    restart: unless-stopped
+    cpus: 2
+    mem_limit: 512MB
+    hostname: test.nodomain.org
+    volumes:
+      - mail_store:/srv/mail:rw
+      - mail_ssl:/certs
+      - sa_learn:/var/spool/spamassassin
+      - mail_backup:/backup
+      - mail_log:/var/log
+    ports:
+      # SMTP
+      - '25:25'
+      # IMAP
+      - "993:993"
+      # Submission
+      - "587:587"
+      # ManageSieve
+      - "4190:4190"
+    environment:
+      POST_MASTER_EMAIL: postmaster@example.org
+      USE_FETCHMAIL_PL: "true"
+    networks:
+      - default
+
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    restart: unless-stopped
+    cpus: 2
+    mem_limit: 350MB
+    volumes:
+      - mysql_data:/var/lib/mysql
+    expose:
+      - 5432
+      - 3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_DATABASE=roundcube
+      - MYSQL_USER=roundcube
+      - MYSQL_PASSWORD=roundcube
+
+  roundcube:
+    image: roundcube/roundcubemail:1.5.x-fpm-alpine
+    container_name: roundcube
+    restart: unless-stopped
+    cpus: 2
+    mem_limit: 100MB
+    depends_on:
+      - mysql
+      - mail
+    links:
+      - mysql
+    expose:
+      - 9000
+    volumes:
+      - roundcube_www:/var/www/html
+      - ./config.inc.php:/var/www/html/config/config.inc.php:ro
+    environment:
+      - ROUNDCUBEMAIL_DB_TYPE=mysql
+      - ROUNDCUBEMAIL_DB_HOST=mysql
+      - ROUNDCUBEMAIL_DB_NAME=roundcube
+      - ROUNDCUBEMAIL_DB_USER=roundcube
+      - ROUNDCUBEMAIL_DB_PASSWORD=roundcube
+      - ROUNDCUBEMAIL_SKIN=larry
+      - ROUNDCUBEMAIL_DEFAULT_HOST=ssl://mail
+      - ROUNDCUBEMAIL_SMTP_SERVER=tls://mail
+      - ROUNDCUBEMAIL_PLUGINS=acl,additional_message_headers,managesieve,show_additional_headers
+
+  nginx:
+    image: nginx:1.21-alpine
+    container_name: nginx
+    restart: unless-stopped
+    cpus: 2
+    mem_limit: 100MB
+    ports:
+      - 80:80
+      # If you need SSL connection
+      # - '443:443'
+    depends_on:
+      - roundcube
+    links:
+      - roundcube
+    volumes:
+      - roundcube_www:/var/www/html
+      - ./nginx/templates:/etc/nginx/templates
+      - ngnix_log:/var/log
+      # Provide a custom nginx conf
+      # - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      # If you need SSL connection, you can provide your own certificates
+      # - ./certs:/etc/letsencrypt
+      # - ./certs-data:/data/letsencrypt
+    environment:
+      - NGINX_HOST=localhost # set your local domain or your live domain
+      - NGINX_PHP_CGI=roundcube:9000 # same as roundcubemail container name
+
+volumes:
+  ldap_data:
+  ldap_config:
+  ldap_certs:
+  mail_store:
+  mail_ssl:
+  clamav_db:
+  sa_learn:
+  mail_backup:
+  mail_log:
+  mysql_data:
+  roundcube_www:
+  nginx_www:
+  ngnix_log:

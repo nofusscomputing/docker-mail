@@ -1,0 +1,33 @@
+INHERIT: website-template/mkdocs.yml
+
+docs_dir: 'docs'
+
+repo_name: Docker-Mail
+repo_url: https://gitlab.com/nofusscomputing/projects/docker-mail
+edit_uri: '/-/ide/project/nofusscomputing/projects/docker-mail/edit/development/-/docs/'
+
+nav:
+- Home: index.md
+
+- Articles: 
+
+  - articles/index.md
+
+- Projects: 
+
+  - projects/index.md
+
+  - Docker-Mail: 
+
+    - projects/docker-mail/index.md
+
+    - projects/docker-mail/dkim.md
+
+    - projects/docker-mail/spf.md
+
+- Operations: 
+
+  - operations/index.md
+
+- Contact Us: contact.md
+

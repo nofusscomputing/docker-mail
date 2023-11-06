@@ -1,0 +1,4 @@
+
+$enable_dkim_signing = 1;
+
+$enable_dkim_verification = 1;

@@ -1,0 +1,19 @@
+{
+  "line-length": false,
+  "MD007": {
+    "indent": 4
+  },
+  "MD033": {
+    "allowed_elements": [ "div", "s", "span", "u", "p", "br" ]
+  },
+  "blanks-around-headings":{
+    "lines_above": 2,
+    "lines_below": 1
+  },
+  "MD012": { 
+    "maximum": 2
+  }, 
+  "comment": {
+    "MD012": "MD012 max=2 added so that headings can have two lines above for clarity."
+  }
+}

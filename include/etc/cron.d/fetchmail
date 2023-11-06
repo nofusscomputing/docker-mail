@@ -1,0 +1,6 @@
+#
+#  SpamAssassin Bayes learning from mailboxes 
+#
+# m h dom mon dow user  command
+#20,50 *	* * *	root	if [ "0$USE_FETCHMAIL_PL" != "0" ]; then /bin/fetchmail.pl 2>&1; fi
+

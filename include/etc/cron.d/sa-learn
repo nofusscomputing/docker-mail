@@ -1,0 +1,6 @@
+#
+#  SpamAssassin Bayes learning from mailboxes 
+#
+# m h dom mon dow user  command
+30 0,3,6,9,12,15,18,21	* * *	debian-spamd	/bin/spam-learn.sh >/dev/null 2>&1
+

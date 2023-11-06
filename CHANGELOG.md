@@ -1,3 +1,13 @@
+## 0.1.0 (2023-11-06)
+
+### Bug Fixes
+
+- **ci**: [cab22ceb](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/cab22cebfa98d50774b4b433fed5f1727f596a26) - added automation config [ [!13](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/13) ]
+
+### Continious Integration
+
+- **automagic**: [b1b5fc20](https://gitlab.com/nofusscomputing/projects/docker-mail/-/commit/b1b5fc20606dc0d87d860ae5ee64559307c6f3ea) - use template automagic for jobs [ [!12](https://gitlab.com/nofusscomputing/projects/docker-mail/-/merge_requests/12) [#5](https://gitlab.com/nofusscomputing/projects/docker-mail/-/issues/5) ]
+
 ## 0.1.0rc3 (2023-05-24)
 
 ### Bug Fixes

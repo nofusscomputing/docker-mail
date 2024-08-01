@@ -61,8 +61,9 @@ LABEL \
   org.opencontainers.image.vendor="No Fuss Computing" \
     #License(s) under which contained software is distributed as an SPDX License Expression.
   org.opencontainers.image.licenses="" \
-  org.opencontainers.image.title="No Fuss Computings docker mail server" \
-  org.opencontainers.image.description="A Complete mailserver in a container"
+  org.opencontainers.image.title="Docker Mail Server" \
+  org.opencontainers.image.description="A Complete mailserver in a container" \
+  io.artifacthub.package.license="MIT"
 
 
 # Install dependencies
